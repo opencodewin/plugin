@@ -31,6 +31,7 @@ struct ExpandNode final : Node
         auto mat_in = context.GetPinValue<ImGui::ImMat>(m_MatIn);
         if (!mat_in.empty())
         {
+            m_in_size = ImVec2(mat_in.w, mat_in.h);
             int gpu = mat_in.device == IM_DD_VULKAN ? mat_in.device_number : ImGui::get_default_gpu_index();
             if (!m_Enabled)
             {
@@ -76,13 +77,35 @@ struct ExpandNode final : Node
         float _bottom = m_bottom_expand;
         float _left = m_left_expand;
         float _right = m_right_expand;
+        auto slider_tooltips = [&]()
+        {
+            if (m_in_size.x > 0 && m_in_size.y > 0)
+            {
+                if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left))
+                {
+                    ed::Suspend();
+                    if (ImGui::BeginTooltip())
+                    {
+                        ImGui::Text("Source: %dx%d", (int)m_in_size.x, (int)m_in_size.y);
+                        ImGui::Text("   Top: %d", (int)(m_in_size.y * _top));
+                        ImGui::Text("Bottom: %d", (int)(m_in_size.y * _bottom));
+                        ImGui::Text("  Left: %d", (int)(m_in_size.x * _left));
+                        ImGui::Text(" Right: %d", (int)(m_in_size.x * _right));
+                        ImGui::Text("Target: %dx%d", (int)(m_in_size.x + m_in_size.x * (_left + _right)), (int)(m_in_size.y + m_in_size.y * (_top + _bottom)));
+                        ImGui::EndTooltip();
+                    }
+                    ed::Resume();
+                }
+            }
+        };
         static ImGuiSliderFlags flags = ImGuiSliderFlags_NoInput | ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_Stick;
-        ImGui::PushItemWidth(200);
+        ImGui::PushItemWidth(300);
         ImGui::BeginDisabled(!m_Enabled);
-        ImGui::SliderFloat("top", &_top, 0.0, 1.f, "%.2f", flags);
-        ImGui::SliderFloat("bottom", &_bottom, 0.0, 1.f, "%.2f", flags);
-        ImGui::SliderFloat("left", &_left, 0.0, 1.f, "%.2f", flags);
-        ImGui::SliderFloat("right", &_right, 0.0, 1.f, "%.2f", flags);
+        ImGui::Dummy(ImVec2(0, 8));
+        ImGui::SliderFloat("top", &_top, 0.0, 1.f, "%.3f", flags); slider_tooltips();
+        ImGui::SliderFloat("bottom", &_bottom, 0.0, 1.f, "%.3f", flags); slider_tooltips();
+        ImGui::SliderFloat("left", &_left, 0.0, 1.f, "%.3f", flags); slider_tooltips();
+        ImGui::SliderFloat("right", &_right, 0.0, 1.f, "%.3f", flags); slider_tooltips();
         ImGui::PopItemWidth();
         if (_top != m_top_expand) { m_top_expand = _top; changed = true; }
         if (_bottom != m_bottom_expand) { m_bottom_expand = _bottom; changed = true; }
@@ -169,6 +192,7 @@ private:
     float m_bottom_expand {0.f};
     float m_left_expand {0.f};
     float m_right_expand {0.f};
+    ImVec2 m_in_size {0.f, 0.f};
 };
 } //namespace BluePrint
 

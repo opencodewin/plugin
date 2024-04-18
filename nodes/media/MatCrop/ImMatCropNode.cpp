@@ -7,7 +7,7 @@
 #include <ImVulkanShader.h>
 #include <Crop_vulkan.h>
 
-#define NODE_VERSION    0x01000000
+#define NODE_VERSION    0x01000100
 
 namespace BluePrint
 {
@@ -24,7 +24,6 @@ struct CropNode final : Node
     void Reset(Context& context) override
     {
         Node::Reset(context);
-        if (m_filter) { delete m_filter; m_filter = nullptr; }
         m_mutex.lock();
         m_MatOut.SetValue(ImGui::ImMat());
         m_mutex.unlock();
@@ -40,6 +39,7 @@ struct CropNode final : Node
         auto mat_in = context.GetPinValue<ImGui::ImMat>(m_MatIn);
         if (!mat_in.empty())
         {
+            m_in_size = ImVec2(mat_in.w, mat_in.h);
             if (!m_Enabled)
             {
                 m_MatOut.SetValue(mat_in);
@@ -57,9 +57,7 @@ struct CropNode final : Node
                     return {};
             }
             ImGui::VkMat im_RGB; im_RGB.type = m_mat_data_type == IM_DT_UNDEFINED ? mat_in.type : m_mat_data_type;
-            im_RGB.w = mat_in.w;
-            im_RGB.h = mat_in.h;
-            m_NodeTimeMs = m_filter->cropto(mat_in, im_RGB, m_x1 * im_RGB.w, m_y1 * im_RGB.h, (m_x2 - m_x1) * im_RGB.w, (m_y2 - m_y1) * im_RGB.h, m_xd * im_RGB.w, m_yd * im_RGB.h);
+            m_NodeTimeMs = m_filter->crop(mat_in, im_RGB, m_x1 * mat_in.w, m_y1 * mat_in.h, (m_x2 - m_x1) * mat_in.w, (m_y2 - m_y1) * mat_in.h);
             m_MatOut.SetValue(im_RGB);
         }
         return m_Exit;
@@ -77,7 +75,7 @@ struct CropNode final : Node
     bool DrawCustomLayout(ImGuiContext * ctx, float zoom, ImVec2 origin, ImGui::ImCurveEdit::Curve * key, bool embedded) override
     {
         ImGui::SetCurrentContext(ctx);
-        float setting_offset = 320;
+        float setting_offset = 348;
         if (!embedded)
         {
             ImVec2 sub_window_pos = ImGui::GetCursorScreenPos();
@@ -89,30 +87,42 @@ struct CropNode final : Node
         float _y1 = m_y1;
         float _x2 = m_x2;
         float _y2 = m_y2;
-        float _xd = m_xd;
-        float _yd = m_yd;
-        // TODO::Hard to get focus and input number
+        auto slider_tooltips = [&]()
+        {
+            if (m_in_size.x > 0 && m_in_size.y > 0)
+            {
+                if (ImGui::IsItemHovered() && ImGui::IsMouseDown(ImGuiMouseButton_Left))
+                {
+                    ed::Suspend();
+                    if (ImGui::BeginTooltip())
+                    {
+                        ImGui::Text("Source: %dx%d", (int)m_in_size.x, (int)m_in_size.y);
+                        ImGui::Text("   Top: %d", (int)(m_in_size.y * _y1));
+                        ImGui::Text("Bottom: %d", (int)(m_in_size.y * _y2));
+                        ImGui::Text("  Left: %d", (int)(m_in_size.x * _x1));
+                        ImGui::Text(" Right: %d", (int)(m_in_size.x * _x2));
+                        ImGui::Text("Target: %dx%d", (int)(m_in_size.x * _x2 - m_in_size.x * _x1), (int)(m_in_size.y * _y2 - m_in_size.y * _y1));
+                        ImGui::EndTooltip();
+                    }
+                    ed::Resume();
+                }
+            }
+        };
         static ImGuiSliderFlags flags = ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_Stick;
         ImGui::PushStyleColor(ImGuiCol_Button, 0);
-        ImGui::PushItemWidth(200);
+        ImGui::PushItemWidth(300);
         ImGui::BeginDisabled(!m_Enabled);
-        ImGui::SliderFloat("x1##Crop", &_x1, 0.f, 1.f, "%.02f", flags);
-        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_x1##Crop")) { _x1 = 0.f; changed = true; }
+        ImGui::SliderFloat("Top##Crop", &_y1, 0.f, 1.f, "%.03f", flags); slider_tooltips();
+        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_top##Crop")) { _y1 = 0.f; changed = true; }
         ImGui::ShowTooltipOnHover("Reset");
-        ImGui::SliderFloat("y1##Crop", &_y1, 0.f, 1.f, "%.02f", flags);
-        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_y1##Crop")) { _y1 = 0.f; changed = true; }
+        ImGui::SliderFloat("Bottom##Crop", &_y2, _y1, 1.f, "%.03f", flags); slider_tooltips();
+        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_bottom##Crop")) { _y2 = 1.f; changed = true; }
         ImGui::ShowTooltipOnHover("Reset");
-        ImGui::SliderFloat("x2##Crop", &_x2, _x1, 1.0f, "%.02f", flags);
-        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_x2##Crop")) { _x2 = 1.f; changed = true; }
+        ImGui::SliderFloat("Left##Crop", &_x1, 0.f, 1.f, "%.03f", flags); slider_tooltips();
+        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_left##Crop")) { _x1 = 0.f; changed = true; }
         ImGui::ShowTooltipOnHover("Reset");
-        ImGui::SliderFloat("y2##Crop", &_y2, _y1, 1.f, "%.02f", flags);
-        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_y2##Crop")) { _y2 = 1.f; changed = true; }
-        ImGui::ShowTooltipOnHover("Reset");
-        ImGui::SliderFloat("xd##Crop", &_xd, -1.f, 1.f, "%.02f", flags);
-        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_xd##Crop")) { _xd = 0.0f; changed = true; }
-        ImGui::ShowTooltipOnHover("Reset");
-        ImGui::SliderFloat("yd##Crop", &_yd, -1.f, 1.f, "%.02f", flags);
-        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_yd##Crop")) { _yd = 0.0f; changed = true; }
+        ImGui::SliderFloat("Right##Crop", &_x2, _x1, 1.0f, "%.03f", flags); slider_tooltips();
+        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_right##Crop")) { _x2 = 1.f; changed = true; }
         ImGui::ShowTooltipOnHover("Reset");
         ImGui::PopItemWidth();
         ImGui::PopStyleColor();
@@ -120,8 +130,6 @@ struct CropNode final : Node
         if (_y1 != m_y1) { m_y1 = _y1; changed = true; }
         if (_x2 != m_x2) { m_x2 = _x2; changed = true; }
         if (_y2 != m_y2) { m_y2 = _y2; changed = true; }
-        if (_xd != m_xd) { m_xd = _xd; changed = true; }
-        if (_yd != m_yd) { m_yd = _yd; changed = true; }
         ImGui::EndDisabled();
         return changed;
     }
@@ -162,18 +170,6 @@ struct CropNode final : Node
             if (val.is_number()) 
                 m_y2 = val.get<imgui_json::number>();
         }
-        if (value.contains("xd"))
-        {
-            auto& val = value["xd"];
-            if (val.is_number()) 
-                m_xd = val.get<imgui_json::number>();
-        }
-        if (value.contains("yd"))
-        {
-            auto& val = value["yd"];
-            if (val.is_number()) 
-                m_yd = val.get<imgui_json::number>();
-        }
         return ret;
     }
 
@@ -185,8 +181,6 @@ struct CropNode final : Node
         value["y1"] = imgui_json::number(m_y1);
         value["x2"] = imgui_json::number(m_x2);
         value["y2"] = imgui_json::number(m_y2);
-        value["xd"] = imgui_json::number(m_xd);
-        value["yd"] = imgui_json::number(m_yd);
     }
 
     void DrawNodeLogo(ImGuiContext * ctx, ImVec2 size, std::string logo) const override
@@ -196,6 +190,10 @@ struct CropNode final : Node
 
     span<Pin*> GetInputPins() override { return m_InputPins; }
     span<Pin*> GetOutputPins() override { return m_OutputPins; }
+    Pin* GetAutoLinkInputFlowPin() override { return &m_Enter; }
+    Pin* GetAutoLinkOutputFlowPin() override { return &m_Exit; }
+    vector<Pin*> GetAutoLinkInputDataPin() override { return {&m_MatIn}; }
+    vector<Pin*> GetAutoLinkOutputDataPin() override { return {&m_MatOut}; }
 
     FlowPin   m_Enter   = { this, "Enter" };
     FlowPin   m_IReset  = { this, "Reset In" };
@@ -214,8 +212,7 @@ private:
     float m_y1 {0};
     float m_x2 {1.0};
     float m_y2 {1.0};
-    float m_xd {0};
-    float m_yd {0};
+    ImVec2 m_in_size {0.f, 0.f};
 };
 } //namespace BluePrint
 
