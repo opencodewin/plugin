@@ -941,8 +941,6 @@ struct MediaSourceNode final : Node
                 // Seek
                 int64_t seek_time = time * AV_TIME_BASE;
                 auto ret = av_seek_frame(m_fmt_ctx, -1, seek_time, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
-                if (ret < 0)
-                    ret = av_seek_frame(m_fmt_ctx, -1, 0, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
                 m_current_pts = time;
                 m_need_update = true;
             }
