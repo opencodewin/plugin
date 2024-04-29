@@ -6,6 +6,7 @@
 #include <mutex>
 #include <thread>
 #include <vector>
+#include <string>
 
 class FFMedia_HWInfo
 {
