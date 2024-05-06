@@ -47,14 +47,14 @@ struct ExpandNode final : Node
             {
                 return {};
             }
-            if (m_top_expand == 0.f && m_bottom_expand == 0.f && m_left_expand == 0.f && m_right_expand == 0.f)
+            if (m_top_expand <= 0 && m_bottom_expand <= 0 && m_left_expand <= 0 && m_right_expand <= 0)
             {
                 m_MatOut.SetValue(mat_in);
                 return m_Exit;
             }
             m_device = gpu;
             ImGui::VkMat im_RGB; im_RGB.type = m_mat_data_type == IM_DT_UNDEFINED ? mat_in.type : m_mat_data_type;
-            m_NodeTimeMs = m_filter->expand(mat_in, im_RGB, mat_in.h * m_top_expand, mat_in.h * m_bottom_expand, mat_in.w * m_left_expand, mat_in.w * m_right_expand);
+            m_NodeTimeMs = m_filter->expand(mat_in, im_RGB, m_top_expand, m_bottom_expand, m_left_expand, m_right_expand);
             m_MatOut.SetValue(im_RGB);
         }
         return m_Exit;
@@ -72,11 +72,18 @@ struct ExpandNode final : Node
     bool DrawCustomLayout(ImGuiContext * ctx, float zoom, ImVec2 origin, ImGui::ImCurveEdit::Curve * key, bool embedded) override
     {
         ImGui::SetCurrentContext(ctx);
+        float setting_offset = 348;
+        if (!embedded)
+        {
+            ImVec2 sub_window_pos = ImGui::GetCursorScreenPos();
+            ImVec2 sub_window_size = ImGui::GetWindowSize();
+            setting_offset = sub_window_size.x - 80;
+        }
         bool changed = false;
-        float _top = m_top_expand;
-        float _bottom = m_bottom_expand;
-        float _left = m_left_expand;
-        float _right = m_right_expand;
+        int _top = m_top_expand;
+        int _bottom = m_bottom_expand;
+        int _left = m_left_expand;
+        int _right = m_right_expand;
         auto slider_tooltips = [&]()
         {
             if (m_in_size.x > 0 && m_in_size.y > 0)
@@ -87,25 +94,29 @@ struct ExpandNode final : Node
                     if (ImGui::BeginTooltip())
                     {
                         ImGui::Text("Source: %dx%d", (int)m_in_size.x, (int)m_in_size.y);
-                        ImGui::Text("   Top: %d", (int)(m_in_size.y * _top));
-                        ImGui::Text("Bottom: %d", (int)(m_in_size.y * _bottom));
-                        ImGui::Text("  Left: %d", (int)(m_in_size.x * _left));
-                        ImGui::Text(" Right: %d", (int)(m_in_size.x * _right));
-                        ImGui::Text("Target: %dx%d", (int)(m_in_size.x + m_in_size.x * (_left + _right)), (int)(m_in_size.y + m_in_size.y * (_top + _bottom)));
+                        ImGui::Text("   Top: %d", _top);
+                        ImGui::Text("Bottom: %d", _bottom);
+                        ImGui::Text("  Left: %d", _left);
+                        ImGui::Text(" Right: %d", _right);
+                        ImGui::Text("Target: %dx%d", (int)(m_in_size.x + (_left + _right)), (int)(m_in_size.y + (_top + _bottom)));
                         ImGui::EndTooltip();
                     }
                     ed::Resume();
                 }
             }
         };
-        static ImGuiSliderFlags flags = ImGuiSliderFlags_NoInput | ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_Stick;
+        static ImGuiSliderFlags flags = /*ImGuiSliderFlags_NoInput | */ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_Stick;
         ImGui::PushItemWidth(300);
         ImGui::BeginDisabled(!m_Enabled);
         ImGui::Dummy(ImVec2(0, 8));
-        ImGui::SliderFloat("top", &_top, 0.0, 1.f, "%.3f", flags); slider_tooltips();
-        ImGui::SliderFloat("bottom", &_bottom, 0.0, 1.f, "%.3f", flags); slider_tooltips();
-        ImGui::SliderFloat("left", &_left, 0.0, 1.f, "%.3f", flags); slider_tooltips();
-        ImGui::SliderFloat("right", &_right, 0.0, 1.f, "%.3f", flags); slider_tooltips();
+        ImGui::SliderInt("top", &_top, 0, m_in_size.y, "%d", flags); slider_tooltips();
+        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_top##Crop")) { _top = 0; changed = true; }
+        ImGui::SliderInt("bottom", &_bottom, 0, m_in_size.y, "%d", flags); slider_tooltips();
+        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_bottom##Crop")) { _bottom = 0; changed = true; }
+        ImGui::SliderInt("left", &_left, 0, m_in_size.x, "%d", flags); slider_tooltips();
+        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_left##Crop")) { _left = 0; changed = true; }
+        ImGui::SliderInt("right", &_right, 0, m_in_size.x, "%d", flags); slider_tooltips();
+        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_right##Crop")) { _right = 0; changed = true; }
         ImGui::PopItemWidth();
         if (_top != m_top_expand) { m_top_expand = _top; changed = true; }
         if (_bottom != m_bottom_expand) { m_bottom_expand = _bottom; changed = true; }
@@ -188,10 +199,10 @@ private:
     ImDataType m_mat_data_type {IM_DT_UNDEFINED};
     int m_device            {-1};
     ImGui::Expand_vulkan * m_filter {nullptr};
-    float m_top_expand {0.f};
-    float m_bottom_expand {0.f};
-    float m_left_expand {0.f};
-    float m_right_expand {0.f};
+    int m_top_expand {0};
+    int m_bottom_expand {0};
+    int m_left_expand {0};
+    int m_right_expand {0};
     ImVec2 m_in_size {0.f, 0.f};
 };
 } //namespace BluePrint

@@ -95,20 +95,20 @@ struct DeBandNode final : Node
         ImGui::PushStyleColor(ImGuiCol_Button, 0);
         ImGui::PushItemWidth(200);
         ImGui::BeginDisabled(!m_Enabled || m_ThresholdIn.IsLinked());
-        ImGui::SliderFloat("Threshold##DeBand", &_threshold, 0, 0.05f, "%.3f", flags);
+        ImGui::SliderFloat("Threshold##DeBand", &_threshold, 0, 0.1f, "%.3f", flags);
         ImGui::SameLine(setting_offset);  if (ImGui::Button(ICON_RESET "##reset_threshold##DeBand")) { _threshold = 0.05f; changed = true; }
         ImGui::ShowTooltipOnHover("Reset");
         ImGui::EndDisabled();
         ImGui::BeginDisabled(!m_Enabled);
-        if (key) ImGui::ImCurveCheckEditKeyWithIDByDim("##add_curve_threshold##DeBand", key, ImGui::ImCurveEdit::DIM_X, m_ThresholdIn.IsLinked(), "threshold##DeBand@" + std::to_string(m_ID), 0.f, 0.05f, 0.01f, m_ThresholdIn.m_ID);
+        if (key) ImGui::ImCurveCheckEditKeyWithIDByDim("##add_curve_threshold##DeBand", key, ImGui::ImCurveEdit::DIM_X, m_ThresholdIn.IsLinked(), "threshold##DeBand@" + std::to_string(m_ID), 0.f, 0.1f, 0.01f, m_ThresholdIn.m_ID);
         ImGui::EndDisabled();
         ImGui::BeginDisabled(!m_Enabled || m_RangeIn.IsLinked());
-        ImGui::SliderInt("Range##DeBand", &_range, 0, 64, "%.d", flags);
+        ImGui::SliderInt("Range##DeBand", &_range, 0, 128, "%.d", flags);
         ImGui::SameLine(setting_offset);  if (ImGui::Button(ICON_RESET "##reset_range##DeBand")) { _range = 16.f; changed = true; }
         ImGui::ShowTooltipOnHover("Reset");
         ImGui::EndDisabled();
         ImGui::BeginDisabled(!m_Enabled);
-        if (key) ImGui::ImCurveCheckEditKeyWithIDByDim("##add_curve_range##DeBand", key, ImGui::ImCurveEdit::DIM_X, m_RangeIn.IsLinked(), "range##DeBand@" + std::to_string(m_ID), 0.f, 64.f, 16.f, m_RangeIn.m_ID);
+        if (key) ImGui::ImCurveCheckEditKeyWithIDByDim("##add_curve_range##DeBand", key, ImGui::ImCurveEdit::DIM_X, m_RangeIn.IsLinked(), "range##DeBand@" + std::to_string(m_ID), 0.f, 128.f, 16.f, m_RangeIn.m_ID);
         ImGui::EndDisabled();
         ImGui::BeginDisabled(!m_Enabled || m_DirectionIn.IsLinked());
         ImGui::SliderFloat("Direction##DeBand", &_direction, 0.f, 4.f, "%.2f", flags);

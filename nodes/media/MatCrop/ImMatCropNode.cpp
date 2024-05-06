@@ -45,7 +45,7 @@ struct CropNode final : Node
                 m_MatOut.SetValue(mat_in);
                 return m_Exit;
             }
-            if (m_x2 - m_x1 <= 0 || m_y2 - m_y1 <= 0)
+            if (m_right - m_left <= 0 || m_bottom - m_top <= 0)
             {
                 return {};
             }
@@ -57,7 +57,7 @@ struct CropNode final : Node
                     return {};
             }
             ImGui::VkMat im_RGB; im_RGB.type = m_mat_data_type == IM_DT_UNDEFINED ? mat_in.type : m_mat_data_type;
-            m_NodeTimeMs = m_filter->crop(mat_in, im_RGB, m_x1 * mat_in.w, m_y1 * mat_in.h, (m_x2 - m_x1) * mat_in.w, (m_y2 - m_y1) * mat_in.h);
+            m_NodeTimeMs = m_filter->crop(mat_in, im_RGB, m_left, m_top, m_right - m_left, m_bottom - m_top);
             m_MatOut.SetValue(im_RGB);
         }
         return m_Exit;
@@ -83,10 +83,10 @@ struct CropNode final : Node
             setting_offset = sub_window_size.x - 80;
         }
         bool changed = false;
-        float _x1 = m_x1;
-        float _y1 = m_y1;
-        float _x2 = m_x2;
-        float _y2 = m_y2;
+        int _left = m_left;
+        int _top = m_top;
+        int _right = m_right;
+        int _bottom = m_bottom;
         auto slider_tooltips = [&]()
         {
             if (m_in_size.x > 0 && m_in_size.y > 0)
@@ -97,11 +97,11 @@ struct CropNode final : Node
                     if (ImGui::BeginTooltip())
                     {
                         ImGui::Text("Source: %dx%d", (int)m_in_size.x, (int)m_in_size.y);
-                        ImGui::Text("   Top: %d", (int)(m_in_size.y * _y1));
-                        ImGui::Text("Bottom: %d", (int)(m_in_size.y * _y2));
-                        ImGui::Text("  Left: %d", (int)(m_in_size.x * _x1));
-                        ImGui::Text(" Right: %d", (int)(m_in_size.x * _x2));
-                        ImGui::Text("Target: %dx%d", (int)(m_in_size.x * _x2 - m_in_size.x * _x1), (int)(m_in_size.y * _y2 - m_in_size.y * _y1));
+                        ImGui::Text("   Top: %d", _top);
+                        ImGui::Text("Bottom: %d", _bottom);
+                        ImGui::Text("  Left: %d", _left);
+                        ImGui::Text(" Right: %d", _right);
+                        ImGui::Text("Target: %dx%d", (int)(_right - _left), (int)(_bottom - _top));
                         ImGui::EndTooltip();
                     }
                     ed::Resume();
@@ -112,24 +112,24 @@ struct CropNode final : Node
         ImGui::PushStyleColor(ImGuiCol_Button, 0);
         ImGui::PushItemWidth(300);
         ImGui::BeginDisabled(!m_Enabled);
-        ImGui::SliderFloat("Top##Crop", &_y1, 0.f, 1.f, "%.03f", flags); slider_tooltips();
-        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_top##Crop")) { _y1 = 0.f; changed = true; }
+        ImGui::SliderInt("Top##Crop", &_top, 0, m_in_size.y, "%d", flags); slider_tooltips();
+        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_top##Crop")) { _top = 0; changed = true; }
         ImGui::ShowTooltipOnHover("Reset");
-        ImGui::SliderFloat("Bottom##Crop", &_y2, _y1, 1.f, "%.03f", flags); slider_tooltips();
-        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_bottom##Crop")) { _y2 = 1.f; changed = true; }
+        ImGui::SliderInt("Bottom##Crop", &_bottom, _top, m_in_size.y, "%d", flags); slider_tooltips();
+        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_bottom##Crop")) { _bottom = m_in_size.y; changed = true; }
         ImGui::ShowTooltipOnHover("Reset");
-        ImGui::SliderFloat("Left##Crop", &_x1, 0.f, 1.f, "%.03f", flags); slider_tooltips();
-        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_left##Crop")) { _x1 = 0.f; changed = true; }
+        ImGui::SliderInt("Left##Crop", &_left, 0, m_in_size.x, "%d", flags); slider_tooltips();
+        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_left##Crop")) { _left = 0; changed = true; }
         ImGui::ShowTooltipOnHover("Reset");
-        ImGui::SliderFloat("Right##Crop", &_x2, _x1, 1.0f, "%.03f", flags); slider_tooltips();
-        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_right##Crop")) { _x2 = 1.f; changed = true; }
+        ImGui::SliderInt("Right##Crop", &_right, _left, m_in_size.x, "%d", flags); slider_tooltips();
+        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_right##Crop")) { _right = m_in_size.x; changed = true; }
         ImGui::ShowTooltipOnHover("Reset");
         ImGui::PopItemWidth();
         ImGui::PopStyleColor();
-        if (_x1 != m_x1) { m_x1 = _x1; changed = true; }
-        if (_y1 != m_y1) { m_y1 = _y1; changed = true; }
-        if (_x2 != m_x2) { m_x2 = _x2; changed = true; }
-        if (_y2 != m_y2) { m_y2 = _y2; changed = true; }
+        if (_left != m_left) { m_left = _left; changed = true; }
+        if (_top != m_top) { m_top = _top; changed = true; }
+        if (_right != m_right) { m_right = _right; changed = true; }
+        if (_bottom != m_bottom) { m_bottom = _bottom; changed = true; }
         ImGui::EndDisabled();
         return changed;
     }
@@ -146,29 +146,29 @@ struct CropNode final : Node
             if (val.is_number()) 
                 m_mat_data_type = (ImDataType)val.get<imgui_json::number>();
         }
-        if (value.contains("x1"))
+        if (value.contains("left"))
         {
-            auto& val = value["x1"];
+            auto& val = value["left"];
             if (val.is_number()) 
-                m_x1 = val.get<imgui_json::number>();
+                m_left = val.get<imgui_json::number>();
         }
-        if (value.contains("y1"))
+        if (value.contains("top"))
         {
-            auto& val = value["y1"];
+            auto& val = value["top"];
             if (val.is_number()) 
-                m_y1 = val.get<imgui_json::number>();
+                m_top = val.get<imgui_json::number>();
         }
-        if (value.contains("x2"))
+        if (value.contains("right"))
         {
-            auto& val = value["x2"];
+            auto& val = value["right"];
             if (val.is_number()) 
-                m_x2 = val.get<imgui_json::number>();
+                m_right = val.get<imgui_json::number>();
         }
-        if (value.contains("y2"))
+        if (value.contains("bottom"))
         {
-            auto& val = value["y2"];
+            auto& val = value["bottom"];
             if (val.is_number()) 
-                m_y2 = val.get<imgui_json::number>();
+                m_bottom = val.get<imgui_json::number>();
         }
         return ret;
     }
@@ -177,10 +177,10 @@ struct CropNode final : Node
     {
         Node::Save(value, MapID);
         value["mat_type"] = imgui_json::number(m_mat_data_type);
-        value["x1"] = imgui_json::number(m_x1);
-        value["y1"] = imgui_json::number(m_y1);
-        value["x2"] = imgui_json::number(m_x2);
-        value["y2"] = imgui_json::number(m_y2);
+        value["left"] = imgui_json::number(m_left);
+        value["top"] = imgui_json::number(m_top);
+        value["right"] = imgui_json::number(m_right);
+        value["bottom"] = imgui_json::number(m_bottom);
     }
 
     void DrawNodeLogo(ImGuiContext * ctx, ImVec2 size, std::string logo) const override
@@ -208,10 +208,10 @@ struct CropNode final : Node
 private:
     ImDataType m_mat_data_type {IM_DT_UNDEFINED};
     ImGui::Crop_vulkan * m_filter {nullptr};
-    float m_x1 {0};
-    float m_y1 {0};
-    float m_x2 {1.0};
-    float m_y2 {1.0};
+    int m_left {0};
+    int m_top {0};
+    int m_right {0};
+    int m_bottom {0};
     ImVec2 m_in_size {0.f, 0.f};
 };
 } //namespace BluePrint
