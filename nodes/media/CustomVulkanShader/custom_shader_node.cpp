@@ -628,9 +628,9 @@ struct CustomShaderNode final : Node
                 changed = true;
             }
         }
-        changed |= ImGui::SliderFloat("X Scale", &m_out_scale.x, 0.1, 4.0, "%.2f", ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_Stick);
+        changed |= ImGui::SliderFloat("X Scale", &m_out_scale.x, 0.1, 4.0, "%.3f", ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_Stick);
         ImGui::SameLine(); if (ImGui::Button(ICON_RESET "##reset_scale_x##CustomShader")) { m_out_scale.x = 1.0; changed = true; }
-        changed |= ImGui::SliderFloat("Y Scale", &m_out_scale.y, 0.1, 4.0, "%.2f", ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_Stick);
+        changed |= ImGui::SliderFloat("Y Scale", &m_out_scale.y, 0.1, 4.0, "%.3f", ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_Stick);
         ImGui::SameLine(); if (ImGui::Button(ICON_RESET "##reset_scale_y##CustomShader")) { m_out_scale.y = 1.0; changed = true; }
         ImGui::Separator();
         if (ImGui::Button( ICON_FK_PLUS " Add param"))
@@ -675,7 +675,7 @@ struct CustomShaderNode final : Node
     {
         ImGui::SetCurrentContext(ctx);
         bool changed = false;
-        ImGui::PushItemWidth(300);
+        ImGui::PushItemWidth(500);
         if (m_params.empty())
         {
             ImGui::TextUnformatted("No params");
@@ -690,7 +690,7 @@ struct CustomShaderNode final : Node
                 ImGui::PushID(id);
                 float _value = param.value;
                 std::string label = param.name.empty() ? "param:" + std::to_string(id + 1) : param.name;
-                ImGui::SliderFloat(label.c_str(), &_value, param.min_value, param.max_value, "%.2f", flags);
+                ImGui::SliderFloat(label.c_str(), &_value, param.min_value, param.max_value, "%.3f", flags);
                 if (_value != param.value) { param.value = _value; changed = true; }
                 ImGui::PopID();
                 id++;
