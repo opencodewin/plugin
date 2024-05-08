@@ -21,7 +21,7 @@ struct LumaTransitionNode final : Node
             auto node_path = GetURL();
             if (!node_path.empty())
             {
-                std::string masks_path = node_path + "masks";
+                std::string masks_path = ImGuiHelper::path_url(node_path) + PATH_SEP + "masks";
                 std::vector<std::string> masks, mask_names;
                 std::vector<std::string> mask_filter = {"png"};
                 if (DIR_Iterate(masks_path, masks, mask_names, mask_filter, false) == 0)
