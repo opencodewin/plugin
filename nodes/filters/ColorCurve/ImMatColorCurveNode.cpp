@@ -263,7 +263,7 @@ struct ColorCurveNode final : Node
                 {
                     if (ImGui::IsMouseDown(ImGuiMouseButton_Left))
                     {
-                        ImGui::CaptureMouseFromApp(true);
+                        ImGui::SetNextFrameWantCaptureMouse(true);
                         dragging_dot = p - mCurve[mEditIndex].begin();
                     }
                     else if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
@@ -342,7 +342,7 @@ struct ColorCurveNode final : Node
         }
         if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
         {
-            ImGui::CaptureMouseFromApp(false);
+            ImGui::SetNextFrameWantCaptureMouse(false);
             dragging_dot = -1;
         }
         
