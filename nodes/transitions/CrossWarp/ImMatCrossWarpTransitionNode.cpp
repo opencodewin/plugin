@@ -16,7 +16,7 @@ struct CrossWarpTransitionNode final : Node
     ~CrossWarpTransitionNode()
     {
         if (m_transition) { delete m_transition; m_transition = nullptr; }
-        if (m_logo) { ImGui::ImDestroyTexture(m_logo); m_logo = nullptr; }
+        ImGui::ImDestroyTexture(&m_logo);
     }
 
     void Reset(Context& context) override

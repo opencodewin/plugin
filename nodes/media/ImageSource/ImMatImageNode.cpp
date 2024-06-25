@@ -18,7 +18,7 @@ struct MatImageNode final : Node
 
     ~MatImageNode()
     {
-        if (m_textureID) { ImGui::ImDestroyTexture(m_textureID); m_textureID = 0; }
+        ImGui::ImDestroyTexture(&m_textureID);
     }
 
     void Reset(Context& context) override
@@ -140,7 +140,7 @@ struct MatImageNode final : Node
                 file_name = ImGuiFileDialog::Instance()->GetCurrentFileName();
                 if (LoadImage())
                 {
-                    if (m_textureID) { ImGui::ImDestroyTexture(m_textureID); m_textureID = 0; }
+                    ImGui::ImDestroyTexture(&m_textureID);
                 }
                 changed = true;
             }

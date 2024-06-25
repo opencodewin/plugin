@@ -16,7 +16,7 @@ struct BlurTransitionNode final : Node
     ~BlurTransitionNode()
     {
         if (m_transition) { delete m_transition; m_transition = nullptr; }
-        if (m_logo) { ImGui::ImDestroyTexture(m_logo); m_logo = nullptr; }
+        ImGui::ImDestroyTexture(&m_logo);
         m_MatOut.SetValue(ImGui::ImMat());
     }
 

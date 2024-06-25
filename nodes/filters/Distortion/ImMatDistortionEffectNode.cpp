@@ -15,7 +15,7 @@ struct DistortionEffectNode final : Node
     ~DistortionEffectNode()
     {
         if (m_effect) { delete m_effect; m_effect = nullptr; }
-        if (m_logo) { ImGui::ImDestroyTexture(m_logo); m_logo = nullptr; }
+        ImGui::ImDestroyTexture(&m_logo);
     }
 
     void Reset(Context& context) override

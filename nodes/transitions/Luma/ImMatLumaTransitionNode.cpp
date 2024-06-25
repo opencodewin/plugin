@@ -45,9 +45,9 @@ struct LumaTransitionNode final : Node
     {
         if (m_transition) { delete m_transition; m_transition = nullptr; }
         m_masks.clear();
-        for (auto texture : m_mask_snapshots) { ImGui::ImDestroyTexture(texture); texture = nullptr; }
+        for (auto texture : m_mask_snapshots) ImGui::ImDestroyTexture(&texture);
         m_mask_snapshots.clear();
-        if (m_logo) { ImGui::ImDestroyTexture(m_logo); m_logo = nullptr; }
+        ImGui::ImDestroyTexture(&m_logo);
     }
 
     void Reset(Context& context) override

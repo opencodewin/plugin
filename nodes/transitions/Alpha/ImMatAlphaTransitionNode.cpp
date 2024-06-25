@@ -16,7 +16,7 @@ struct AlphaTransitionNode final : Node
     ~AlphaTransitionNode()
     {
         if (m_alpha) { delete m_alpha; m_alpha = nullptr; }
-        if (m_logo) { ImGui::ImDestroyTexture(m_logo); m_logo = nullptr; }
+        ImGui::ImDestroyTexture(&m_logo);
     }
 
     void Reset(Context& context) override

@@ -29,7 +29,7 @@ struct MatRenderNode final : Node
     MatRenderNode(BP* blueprint): Node(blueprint) { m_Name = "Mat Render"; m_HasCustomLayout = true; }
     ~MatRenderNode()
     {
-        if (m_textureID) { ImGui::ImDestroyTexture(m_textureID); m_textureID = 0; }
+        ImGui::ImDestroyTexture(&m_textureID);
         m_RenderMat = ImGui::ImMat();
 #if IMGUI_VULKAN_SHADER
         if (m_convert) { delete m_convert; m_convert = nullptr; }
@@ -40,7 +40,7 @@ struct MatRenderNode final : Node
     void Reset(Context& context) override
     {
         Node::Reset(context);
-        if (m_textureID) { ImGui::ImDestroyTexture(m_textureID); m_textureID = 0; }
+        ImGui::ImDestroyTexture(&m_textureID);
         m_RenderMat = ImGui::ImMat();
 #if IMGUI_VULKAN_SHADER
         if (m_convert) { delete m_convert; m_convert = nullptr; }

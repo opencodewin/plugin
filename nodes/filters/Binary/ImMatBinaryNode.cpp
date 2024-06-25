@@ -16,7 +16,7 @@ struct BinaryNode final : Node
     ~BinaryNode()
     {
         if (m_filter) { delete m_filter; m_filter = nullptr; }
-        if (m_logo) { ImGui::ImDestroyTexture(m_logo); m_logo = nullptr; }
+        ImGui::ImDestroyTexture(&m_logo);
     }
 
     void Reset(Context& context) override
