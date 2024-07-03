@@ -20,8 +20,6 @@ add_library(
     ${PLUGIN}
     SHARED
     ImMatGaussianBlurNode.cpp
-    GaussianBlur.cpp
-    GaussianBlur.h
 )
 
 add_dependencies(${PLUGIN} BluePrintSDK VkShader imgui)
