@@ -221,7 +221,7 @@ struct Lut3DNode final : Node
 		ImVec2 maxSize = ImVec2(FLT_MAX, FLT_MAX);
         if (m_lut_mode == NO_DEFAULT) ImGui::BeginDisabled(false);  else ImGui::BeginDisabled(true);
         static string filters = ".cube";
-        ImGuiFileDialogFlags vflags = ImGuiFileDialogFlags_ShowBookmark | ImGuiFileDialogFlags_DontShowHiddenFiles | ImGuiFileDialogFlags_CaseInsensitiveExtention | ImGuiFileDialogFlags_Modal;
+        ImGuiFileDialogFlags vflags = ImGuiFileDialogFlags_ShowBookmark | ImGuiFileDialogFlags_DontShowHiddenFiles | ImGuiFileDialogFlags_CaseInsensitiveExtentionFiltering | ImGuiFileDialogFlags_Modal;
         vflags |= ImGuiFileDialogFlags_DontShowHiddenFiles;
         if (ImGui::Button(ICON_IGFD_FOLDER_OPEN " Choose File ## "))
         {
