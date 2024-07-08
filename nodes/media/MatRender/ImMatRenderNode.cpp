@@ -241,9 +241,9 @@ struct MatRenderNode final : Node
             file_name = m_save_file_path.substr(separator + 1);
         else
             file_name = m_save_file_path;
-        ImGuiFileDialogFlags vflags = ImGuiFileDialogFlags_DontShowHiddenFiles | ImGuiFileDialogFlags_Modal;
-        if (m_isShowBookmark)       vflags |= ImGuiFileDialogFlags_ShowBookmark;
-        if (!m_isShowHiddenFiles)   vflags |= ImGuiFileDialogFlags_DontShowHiddenFiles;
+        ImGuiFileDialogFlags vflags = ImGuiFileDialogFlags_SaveFile_Default;
+        if (!m_isShowBookmark)      vflags &= ~ImGuiFileDialogFlags_ShowBookmark;
+        if (m_isShowHiddenFiles)    vflags &= ~ImGuiFileDialogFlags_DontShowHiddenFiles;
         if (m_Blueprint->GetStyleLight())
             ImGuiFileDialog::Instance()->SetLightStyle();
         else

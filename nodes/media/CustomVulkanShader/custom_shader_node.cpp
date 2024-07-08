@@ -350,7 +350,6 @@ struct CustomShaderNode final : Node
     bool DrawShaderEditor()
     {
         static string filters = ".comp";
-        ImGuiFileDialogFlags vflags = ImGuiFileDialogFlags_ShowBookmark | ImGuiFileDialogFlags_DontShowHiddenFiles | ImGuiFileDialogFlags_CaseInsensitiveExtentionFiltering | ImGuiFileDialogFlags_Modal;
         bool changed = false;
         ImGui::PushID(m_ID);
         auto cpos = m_editor.GetCursorPosition();
@@ -442,7 +441,7 @@ struct CustomShaderNode final : Node
             config.path = ".";
             config.countSelectionMax = 1;
             config.userDatas = IGFDUserDatas("Load Source");
-            config.flags = vflags;
+            config.flags = ImGuiFileDialogFlags_OpenFile_Default;
             ImGuiFileDialog::Instance()->OpenDialog("##CustomShader_FileDlg", ICON_IGFD_FOLDER_OPEN " Choose File", 
                                                     filters.c_str(), 
                                                     config);
@@ -454,7 +453,7 @@ struct CustomShaderNode final : Node
             config.path = ".";
             config.countSelectionMax = 1;
             config.userDatas = IGFDUserDatas("Save Source");
-            config.flags = vflags;
+            config.flags = ImGuiFileDialogFlags_SaveFile_Default;
             ImGuiFileDialog::Instance()->OpenDialog("##CustomShader_FileDlg", ICON_IGFD_FOLDER_OPEN " Choose File", 
                                                     filters.c_str(), 
                                                     config);// TODO::Dicky save source code file

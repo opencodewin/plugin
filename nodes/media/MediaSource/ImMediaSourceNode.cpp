@@ -879,15 +879,13 @@ struct MediaSourceNode final : Node
         auto& io = ImGui::GetIO();
         if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
             io.ConfigViewportsNoDecoration = true;
-        ImGuiFileDialogFlags vflags = ImGuiFileDialogFlags_DontShowHiddenFiles | ImGuiFileDialogFlags_CaseInsensitiveExtentionFiltering | ImGuiFileDialogFlags_Modal;
-        vflags |= ImGuiFileDialogFlags_ShowBookmark;
         if (ImGui::Button(ICON_IGFD_FOLDER_OPEN " Choose File"))
         {
             IGFD::FileDialogConfig config;
             config.path = m_path.empty() ? "." : m_path;
             config.countSelectionMax = 1;
             config.userDatas = this;
-            config.flags = vflags;
+            config.flags = ImGuiFileDialogFlags_OpenFile_Default;
             ImGuiFileDialog::Instance()->OpenDialog("##NodeMediaSourceDlgKey", "Choose File", 
                                                     filters, 
                                                     config);
