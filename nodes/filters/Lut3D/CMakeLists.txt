@@ -28,10 +28,11 @@ add_library(
     HDR2020PQ_HDR2020HLG.cpp
 )
 
-add_dependencies(${PLUGIN} BluePrintSDK VkShader imgui)
+add_dependencies(${PLUGIN} VkShader imgui)
 set_property(TARGET ${PLUGIN} PROPERTY POSITION_INDEPENDENT_CODE ON)
 set (LINK_LIBS
     -L${CMAKE_BINARY_DIR}
+    -L${EXTRA_DEPENDENCE_LIBRARY_PATH}
     -lBluePrintSDK
     -lVkShader
     -limgui

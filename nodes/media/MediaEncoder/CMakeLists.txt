@@ -28,8 +28,9 @@ if(PKG_CONFIG_FOUND)
 endif(PKG_CONFIG_FOUND)
 
 set (LINK_LIBS
-    ${IMGUI_BLUEPRINT_SDK_LIBRARYS}
-    ${IMGUI_LIBRARYS}
+    -L${EXTRA_DEPENDENCE_LIBRARY_PATH}
+    BluePrintSDK
+    imgui
     PkgConfig::FFMPEG
 )
 set(PLUGIN MediaEncoder)

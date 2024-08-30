@@ -23,10 +23,11 @@ add_library(
     Morph_vulkan.h
     Morph_shader.h
 )
-
+add_dependencies(${PLUGIN} VkShader imgui)
 set_property(TARGET ${PLUGIN} PROPERTY POSITION_INDEPENDENT_CODE ON)
 set (LINK_LIBS
     -L${CMAKE_BINARY_DIR}
+    -L${EXTRA_DEPENDENCE_LIBRARY_PATH}
     -lBluePrintSDK
     -lVkShader
     -limgui
@@ -36,7 +37,6 @@ target_link_libraries(
     ${LINK_LIBS}
 )
 
-add_dependencies(${PLUGIN} BluePrintSDK VkShader imgui)
 set_target_properties(
     ${PLUGIN}
     PROPERTIES

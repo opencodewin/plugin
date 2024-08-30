@@ -1,6 +1,6 @@
-#include <BluePrint.h>
-#include <Node.h>
-#include <Pin.h>
+#include <blueprintsdk/BluePrint.h>
+#include <blueprintsdk/Node.h>
+#include <blueprintsdk/Pin.h>
 #include <imgui_json.h>
 #include <imgui_helper.h>
 #if IMGUI_RENDERING_VULKAN

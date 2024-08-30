@@ -20,10 +20,11 @@ add_library(
     ImMatAudioFadeTransitionNode.cpp
 )
 
-add_dependencies(AudioFade BluePrintSDK imgui)
+add_dependencies(AudioFade imgui)
 set_property(TARGET AudioFade PROPERTY POSITION_INDEPENDENT_CODE ON)
 set (LINK_LIBS
     -L${CMAKE_BINARY_DIR}
+    -L${EXTRA_DEPENDENCE_LIBRARY_PATH}
     -lBluePrintSDK
     -limgui
 )
