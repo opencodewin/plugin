@@ -27,11 +27,6 @@ if(PKG_CONFIG_FOUND)
     )
 endif(PKG_CONFIG_FOUND)
 
-set (LINK_LIBS
-    ${IMGUI_BLUEPRINT_SDK_LIBRARYS}
-    ${IMGUI_LIBRARYS}
-    PkgConfig::FFMPEG
-)
 set(PLUGIN MediaEncoder)
 
 add_library(
@@ -50,7 +45,17 @@ add_library(
     ffmedia/fps_filter.h
 )
 
+add_dependencies(${PLUGIN} ${EXTRA_DEPENDENCE_PROJECT})
 set_property(TARGET ${PLUGIN} PROPERTY POSITION_INDEPENDENT_CODE ON)
+set (LINK_LIBS ${EXTRA_DEPENDENCE_LIBRARYS})
+
+if (FFMPEG_FOUND)
+    add_compile_definitions(SDK_WITH_FFMPEG)
+    set(LINK_LIBS
+        ${LINK_LIBS}
+        PkgConfig::FFMPEG
+    )
+endif(FFMPEG_FOUND)
 
 target_link_libraries(
     ${PLUGIN}

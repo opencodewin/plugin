@@ -23,15 +23,9 @@ add_library(
     CustomShader.h
 )
 
-add_dependencies(${PLUGIN} BluePrintSDK VkShader imgui)
+add_dependencies(${PLUGIN} ${EXTRA_DEPENDENCE_PROJECT})
 set_property(TARGET ${PLUGIN} PROPERTY POSITION_INDEPENDENT_CODE ON)
-set (LINK_LIBS
-    -L${CMAKE_BINARY_DIR}
-    -lBluePrintSDK
-    -lVkShader
-    -limgui
-    imgui_addons
-)
+set (LINK_LIBS ${EXTRA_DEPENDENCE_LIBRARYS})
 
 target_link_libraries(
     ${PLUGIN}

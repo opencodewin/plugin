@@ -23,7 +23,7 @@ add_library(
     ImSDLAudioRenderNode.cpp
 )
 
-add_dependencies(${PLUGIN} imgui)
+add_dependencies(${PLUGIN} ${EXTRA_DEPENDENCE_PROJECT})
 set_property(TARGET ${PLUGIN} PROPERTY POSITION_INDEPENDENT_CODE ON)
 set (LINK_LIBS
     ${EXTRA_DEPENDENCE_LIBRARYS}

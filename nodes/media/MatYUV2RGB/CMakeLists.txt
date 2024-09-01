@@ -35,14 +35,10 @@ add_library(
     ImMatYUV2RGBNode.cpp
 )
 
-add_dependencies(${PLUGIN} BluePrintSDK VkShader imgui)
+add_dependencies(${PLUGIN} ${EXTRA_DEPENDENCE_PROJECT})
 set_property(TARGET ${PLUGIN} PROPERTY POSITION_INDEPENDENT_CODE ON)
-set (LINK_LIBS
-    -L${CMAKE_BINARY_DIR}
-    -lBluePrintSDK
-    -lVkShader
-    -limgui
-)
+set (LINK_LIBS ${EXTRA_DEPENDENCE_LIBRARYS})
+
 if (FFMPEG_FOUND)
     add_compile_definitions(SDK_WITH_FFMPEG)
     set(LINK_LIBS
