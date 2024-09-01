@@ -23,13 +23,10 @@ add_library(
     ImSDLAudioRenderNode.cpp
 )
 
-add_dependencies(${PLUGIN} BluePrintSDK imgui)
+add_dependencies(${PLUGIN} imgui)
 set_property(TARGET ${PLUGIN} PROPERTY POSITION_INDEPENDENT_CODE ON)
 set (LINK_LIBS
-    -L${CMAKE_BINARY_DIR}
-    -lBluePrintSDK
-    -limgui
-    -limgui_addons
+    ${EXTRA_DEPENDENCE_LIBRARYS}
     ${SDL2_STATIC_LDFLAGS}
 )
 target_link_libraries(
