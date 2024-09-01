@@ -30,7 +30,6 @@ target_link_libraries(
     ${LINK_LIBS}
 )
 
-add_dependencies(${PLUGIN} BluePrintSDK VkShader imgui)
 set_target_properties(
     ${PLUGIN}
     PROPERTIES

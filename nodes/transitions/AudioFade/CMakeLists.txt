@@ -14,8 +14,9 @@ if (POLICY CMP0068)
     cmake_policy(SET CMP0068 NEW)
 endif()
 
+set(PLUGIN AudioFade)
 add_library(
-    AudioFade
+    ${PLUGIN}
     SHARED
     ImMatAudioFadeTransitionNode.cpp
 )
@@ -25,12 +26,12 @@ set (LINK_LIBS ${EXTRA_DEPENDENCE_LIBRARYS})
 set_property(TARGET ${PLUGIN} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 target_link_libraries(
-    AudioFade
+    ${PLUGIN}
     ${LINK_LIBS}
 )
 
 set_target_properties(
-    AudioFade
+    ${PLUGIN}
     PROPERTIES
     PREFIX ""
     SUFFIX ".node"
