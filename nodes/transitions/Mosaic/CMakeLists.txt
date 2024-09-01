@@ -19,16 +19,12 @@ add_library(
     ${PLUGIN}
     SHARED
     ImMatMosaicTransitionNode.cpp
-    Mosaic_vulkan.cpp
-    Mosaic_vulkan.h
-    Mosaic_shader.h
 )
 
-add_dependencies(${PLUGIN} VkShader imgui)
+add_dependencies(${PLUGIN} BluePrintSDK VkShader imgui)
 set_property(TARGET ${PLUGIN} PROPERTY POSITION_INDEPENDENT_CODE ON)
 set (LINK_LIBS
     -L${CMAKE_BINARY_DIR}
-    -L${EXTRA_DEPENDENCE_LIBRARY_PATH}
     -lBluePrintSDK
     -lVkShader
     -limgui

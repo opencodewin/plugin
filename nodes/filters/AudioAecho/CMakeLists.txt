@@ -34,13 +34,13 @@ add_library(
     SHARED
     ImMatAudioAechoNode.cpp
 )
-add_dependencies(${PLUGIN} imgui)
+add_dependencies(${PLUGIN} BluePrintSDK imgui)
 set_property(TARGET ${PLUGIN} PROPERTY POSITION_INDEPENDENT_CODE ON)
 set (LINK_LIBS
     -L${CMAKE_BINARY_DIR}
-    -L${EXTRA_DEPENDENCE_LIBRARY_PATH}
     -lBluePrintSDK
     -limgui
+    -limgui_addons
 )
 
 if (FFMPEG_FOUND)

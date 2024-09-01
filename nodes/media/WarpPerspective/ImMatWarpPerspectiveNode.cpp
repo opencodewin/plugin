@@ -1,7 +1,7 @@
-#include <blueprintsdk/BluePrint.h>
-#include <blueprintsdk/Node.h>
-#include <blueprintsdk/Pin.h>
-#include <blueprintsdk/UI.h>
+#include <BluePrint.h>
+#include <Node.h>
+#include <Pin.h>
+#include <UI.h>
 #include <imgui_json.h>
 #include <ImVulkanShader.h>
 #include <warpAffine_vulkan.h>

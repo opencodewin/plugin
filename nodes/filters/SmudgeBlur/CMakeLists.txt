@@ -19,19 +19,16 @@ add_library(
     ${PLUGIN}
     SHARED
     ImMatSmudgeBlurEffectNode.cpp
-    SmudgeBlur_vulkan.cpp
-    SmudgeBlur_vulkan.h
-    SmudgeBlur_shader.h
 )
 
-add_dependencies(${PLUGIN} VkShader imgui)
+add_dependencies(${PLUGIN} BluePrintSDK VkShader imgui)
 set_property(TARGET ${PLUGIN} PROPERTY POSITION_INDEPENDENT_CODE ON)
 set (LINK_LIBS
     -L${CMAKE_BINARY_DIR}
-    -L${EXTRA_DEPENDENCE_LIBRARY_PATH}
     -lBluePrintSDK
     -lVkShader
     -limgui
+    -limgui_addons
 )
 target_link_libraries(
     ${PLUGIN}
@@ -43,6 +40,6 @@ set_target_properties(
     PROPERTIES
     PREFIX ""
     SUFFIX ".node"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/plugins/${PLUGIN_FOLDER}/effects/"
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/plugins/${PLUGIN_FOLDER}/effects/"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/plugins/${PLUGIN_FOLDER}/filters/"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/plugins/${PLUGIN_FOLDER}/filters/"
 )

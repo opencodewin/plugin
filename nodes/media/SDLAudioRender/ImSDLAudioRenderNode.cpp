@@ -1,6 +1,6 @@
-#include <blueprintsdk/BluePrint.h>
-#include <blueprintsdk/Node.h>
-#include <blueprintsdk/Pin.h>
+#include <BluePrint.h>
+#include <Node.h>
+#include <Pin.h>
 #include <imgui_extra_widget.h>
 #include <SDL.h>
 #include <SDL_thread.h>

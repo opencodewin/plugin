@@ -35,14 +35,14 @@ add_library(
     ImMediaSourceNode.cpp
 )
 
-add_dependencies(${PLUGIN} VkShader imgui)
+add_dependencies(${PLUGIN} BluePrintSDK VkShader imgui)
 set_property(TARGET ${PLUGIN} PROPERTY POSITION_INDEPENDENT_CODE ON)
 set (LINK_LIBS
     -L${CMAKE_BINARY_DIR}
-    -L${EXTRA_DEPENDENCE_LIBRARY_PATH}
     -lBluePrintSDK
     -lVkShader
     -limgui
+    -limgui_addons
 )
 if (FFMPEG_FOUND)
     add_compile_definitions(SDK_WITH_FFMPEG)
