@@ -15,6 +15,7 @@ if (POLICY CMP0068)
 endif()
 
 set(PLUGIN AudioFade)
+
 add_library(
     ${PLUGIN}
     SHARED
