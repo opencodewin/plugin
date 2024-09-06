@@ -6,7 +6,7 @@
 #include <imgui_helper.h>
 #include <TextEditor.h>
 #include <ImVulkanShader.h>
-#include <imvk_mat_shader.h>
+#include <imvk_shader.h>
 #include "glslang/Public/ShaderLang.h"
 #include "CustomShader.h"
 #include <algorithm>
