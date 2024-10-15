@@ -158,7 +158,7 @@ private:
     bool m_reverse_effect {false};
     bool m_reverse_rotation {false};
     ImGui::RotateScaleVanish_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

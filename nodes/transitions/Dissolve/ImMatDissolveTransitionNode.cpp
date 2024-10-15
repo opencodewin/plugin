@@ -210,7 +210,7 @@ private:
     float m_pow {5.0};
     float m_intensity {1.0};
     ImGui::Dissolve_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

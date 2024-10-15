@@ -162,7 +162,7 @@ private:
     float m_smoothness  {0.3f};
     int m_open          {0};
     ImGui::CircleBlur_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

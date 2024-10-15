@@ -179,7 +179,7 @@ private:
     float m_shadow_height {0.075};
     float m_bounces {3.f};
     ImGui::Bounce_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

@@ -220,7 +220,7 @@ private:
     int m_size_x        {4};
     int m_size_y        {4};
     ImGui::GridFlip_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

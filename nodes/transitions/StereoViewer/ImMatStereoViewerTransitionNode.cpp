@@ -161,7 +161,7 @@ private:
     float m_zoom        {0.88f};
     float m_corner_radius {0.22f};
     ImGui::StereoViewer_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

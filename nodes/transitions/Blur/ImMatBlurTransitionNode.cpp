@@ -162,7 +162,7 @@ private:
     float m_intensity {0.1};
     int m_passes {6};
     ImGui::LinearBlur_vulkan * m_transition {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

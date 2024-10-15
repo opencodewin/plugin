@@ -187,7 +187,7 @@ private:
     float m_pa          {4};
     float m_pb          {1};
     ImGui::CrazyParametric_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

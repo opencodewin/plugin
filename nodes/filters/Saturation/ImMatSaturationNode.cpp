@@ -161,7 +161,7 @@ private:
     int m_device            {-1};
     ImGui::Saturation_vulkan * m_filter   {nullptr};
     float m_saturation      {1.0f};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 100;

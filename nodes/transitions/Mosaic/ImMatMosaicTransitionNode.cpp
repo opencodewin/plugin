@@ -163,7 +163,7 @@ private:
     int m_size_x        {2};
     int m_size_y        {-1};
     ImGui::Mosaic_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

@@ -174,7 +174,7 @@ private:
     float m_waves       {10.f};
     float m_colorSeparation {0.3f};
     ImGui::ButterflyWave_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

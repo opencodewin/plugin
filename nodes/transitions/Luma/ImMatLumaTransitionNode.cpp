@@ -66,7 +66,7 @@ struct LumaTransitionNode final : Node
             {
                 auto small_mat = ImGui::MatResize(mask, ImSize(64, 64));
                 ImGui::ImMat mat_snapshot = ImGui::GrayToImage(small_mat);
-                ImTextureID texture = nullptr;
+                ImTextureID texture = 0;
                 ImGui::ImMatToTexture(mat_snapshot, texture);
                 m_mask_snapshots.push_back(texture);
             }
@@ -230,7 +230,7 @@ private:
     std::vector<ImTextureID> m_mask_snapshots;
     std::vector<std::string> m_mask_name;
     int m_mask_index {0};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

@@ -170,7 +170,7 @@ private:
     ImPixel m_color {0.0f, 0.0f, 0.0f, 1.0f};
     int m_type {1};
     ImGui::Fade_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

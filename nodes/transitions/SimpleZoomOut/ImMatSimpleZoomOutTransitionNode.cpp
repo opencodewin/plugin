@@ -159,7 +159,7 @@ private:
     float m_quickness   {0.8f};
     bool m_fade         {true};
     ImGui::SimpleZoomOut_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

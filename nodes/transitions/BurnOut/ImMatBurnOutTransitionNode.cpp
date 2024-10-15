@@ -166,7 +166,7 @@ private:
     ImPixel m_shadowColor {0.0f, 0.0f, 0.0f, 1.0f};
     float m_smoothness {0.03};
     ImGui::BurnOut_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

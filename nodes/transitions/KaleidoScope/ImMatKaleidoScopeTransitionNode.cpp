@@ -174,7 +174,7 @@ private:
     float m_angle       {1.0f};
     float m_power       {1.5f};
     ImGui::KaleidoScope_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

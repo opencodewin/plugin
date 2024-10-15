@@ -197,7 +197,7 @@ private:
     float m_intensity       {1.f};
     float m_count           {40.f};
     ImGui::RadicalBlur_vulkan * m_effect   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 100;

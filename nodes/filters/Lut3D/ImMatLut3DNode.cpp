@@ -348,7 +348,7 @@ private:
     string m_file_name;
     ImGui::LUT3D_vulkan * m_filter {nullptr};
     bool  m_setting_changed {false};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 100;

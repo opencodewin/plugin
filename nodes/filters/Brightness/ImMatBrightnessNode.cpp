@@ -161,7 +161,7 @@ private:
     int m_device        {-1};
     ImGui::Brightness_vulkan * m_filter   {nullptr};
     float m_brightness      {0.0f};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 100;

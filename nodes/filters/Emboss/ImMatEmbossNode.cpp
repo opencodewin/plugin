@@ -209,7 +209,7 @@ private:
     int m_stride            {2};
     float m_angle           {45.f};
     ImGui::Emboss_vulkan * m_filter   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 100;

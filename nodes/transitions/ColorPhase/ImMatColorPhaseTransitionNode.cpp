@@ -168,7 +168,7 @@ private:
     ImPixel m_fromColor {0.0f, 0.2f, 0.4f, 0.0f};
     ImPixel m_toColor   {0.6f, 0.8f, 1.0f, 1.0f};
     ImGui::ColorPhase_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

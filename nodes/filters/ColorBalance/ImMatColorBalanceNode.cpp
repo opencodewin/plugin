@@ -216,7 +216,7 @@ private:
     ImVec4 m_highlights         {0, 0, 0, 0};
     bool m_preserve_lightness {false};
     bool m_ganged {false};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 100;

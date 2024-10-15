@@ -200,7 +200,7 @@ private:
     float m_dripScale   {0.5f};
     int m_bars          {30};
     ImGui::DoomScreen_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

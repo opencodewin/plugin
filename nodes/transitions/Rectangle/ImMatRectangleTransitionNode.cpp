@@ -150,7 +150,7 @@ private:
     int m_device        {-1};
     ImPixel m_bgColor {0.0f, 0.0f, 0.0f, 1.0f};
     ImGui::Rectangle_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

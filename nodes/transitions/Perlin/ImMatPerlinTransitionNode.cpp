@@ -174,7 +174,7 @@ private:
     float m_smoothness  {0.01f};
     float m_seed        {12.9898f};
     ImGui::Perlin_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

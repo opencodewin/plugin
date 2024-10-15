@@ -162,7 +162,7 @@ private:
     int m_size          {10};
     ImVec2 m_direction  {1.0, -0.5};
     ImGui::SquaresWire_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

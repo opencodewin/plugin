@@ -163,7 +163,7 @@ private:
     float m_thickness {0.001};
     float m_brightness {8.0};
     ImGui::Edge_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

@@ -179,7 +179,7 @@ private:
     float m_scale       {8.0f};
     ImPixel m_backColor {0.15f, 0.15f, 0.15f, 1.0f};
     ImGui::RotateScale_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

@@ -222,7 +222,7 @@ private:
     float m_lum_tmp     {4.5};
     float m_chrom_tmp   {3.375};
     ImGui::HQDN3D_vulkan * m_filter   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 100;

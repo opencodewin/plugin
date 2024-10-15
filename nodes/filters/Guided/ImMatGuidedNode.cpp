@@ -178,7 +178,7 @@ private:
     float   m_eps           {1e-4};
     int     m_range         {4};
     ImGui::Guided_vulkan * m_filter   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 100;

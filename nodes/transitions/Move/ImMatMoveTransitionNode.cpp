@@ -152,7 +152,7 @@ private:
     int m_device        {-1};
     ImVec2 m_direction   {1, 0};
     ImGui::Move_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

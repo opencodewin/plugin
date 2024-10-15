@@ -214,7 +214,7 @@ private:
     float m_direction       {2};
     bool m_blur             {false};
     ImGui::DeBand_vulkan *  m_filter {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 100;

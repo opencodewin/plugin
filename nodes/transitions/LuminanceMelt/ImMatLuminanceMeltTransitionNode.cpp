@@ -172,7 +172,7 @@ private:
     int m_direction     {0};
     int m_above         {0};
     ImGui::LuminanceMelt_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 128;

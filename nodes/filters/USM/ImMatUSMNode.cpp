@@ -196,7 +196,7 @@ private:
     float m_threshold   {1.f};
     float m_amount      {1.5f};
     ImGui::USM_vulkan * m_filter {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 100;

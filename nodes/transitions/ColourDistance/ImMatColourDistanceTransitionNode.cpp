@@ -148,7 +148,7 @@ private:
     int m_device        {-1};
     float m_power       {5.0f};
     ImGui::ColourDistance_vulkan * m_transition   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
 

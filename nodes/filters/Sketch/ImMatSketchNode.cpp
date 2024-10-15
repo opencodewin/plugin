@@ -182,7 +182,7 @@ private:
     float m_intensity       {0.5f};
     int m_step              {1};
     ImGui::Sketch_vulkan * m_filter   {nullptr};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 100;

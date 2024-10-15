@@ -223,7 +223,7 @@ private:
     float m_alphaCutoffMin      {0.05f};
     float m_alphaScale          {50.f};
     float m_alphaExponent       {1.0f};
-    mutable ImTextureID  m_logo {nullptr};
+    mutable ImTextureID  m_logo {0};
     mutable int m_logo_index {0};
 
     const unsigned int logo_width = 100;
