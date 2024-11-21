@@ -28,8 +28,9 @@ struct LumaTransitionNode final : Node
                 {
                     for (int i = 0; i < masks.size(); i++)
                     {
-                        ImGui::ImMat mat;
-                        ImGui::ImLoadImageToMat(masks[i].c_str(), mat, true);
+                        ImGui::ImMat mat, gray_mat;
+                        ImGui::ImLoadImageToMat(masks[i].c_str(), mat);
+                        gray_mat = mat.cvtToGray();
                         if (!mat.empty())
                         {
                             m_mask_name.push_back(mask_names[i]);
