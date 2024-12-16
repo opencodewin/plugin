@@ -333,8 +333,9 @@ struct CustomShaderNode final : Node
         }
         else
         {
-            TextEditor::ErrorMarkers markers;
-            m_editor.SetErrorMarkers(markers);
+            //TextEditor::ErrorMarkers markers;
+            m_editor.ClearErrorMarkers();
+            m_editor_preview.ClearErrorMarkers();
             m_compile_log = "Compile Succeed!!!";
             m_compile_succeed = true;
             if (m_filter) { delete m_filter; m_filter = nullptr; }

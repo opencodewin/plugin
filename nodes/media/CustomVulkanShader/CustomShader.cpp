@@ -92,7 +92,7 @@ double CustomShader::filter(const ImGui::ImMat& src, const ImGui::ImMat& src2, I
         width = src.w;
         height = src.h;
     }
-    dst_gpu.create_type(width, height, 4, dst.type, opt.blob_vkallocator);
+    dst_gpu.create_type(width, height, src.c, dst.type, opt.blob_vkallocator);
 
     ImGui::VkMat src_gpu;
     if (src.device == IM_DD_VULKAN)
