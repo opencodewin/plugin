@@ -25,8 +25,8 @@ namespace BluePrint
 {
 struct MatRenderNode final : Node
 {
-    BP_NODE_WITH_NAME(MatRenderNode, "Image Render", "CodeWin", NODE_VERSION, VERSION_BLUEPRINT_API, NodeType::External, NodeStyle::Default, "Media")
-    MatRenderNode(BP* blueprint): Node(blueprint) { m_Name = "Image Render"; m_HasCustomLayout = true; }
+    BP_NODE_WITH_NAME(MatRenderNode, "Media Render", "CodeWin", NODE_VERSION, VERSION_BLUEPRINT_API, NodeType::External, NodeStyle::Default, "Media")
+    MatRenderNode(BP* blueprint): Node(blueprint) { m_Name = "Media Render"; m_HasCustomLayout = true; }
     ~MatRenderNode()
     {
         ImGui::ImDestroyTexture(&m_textureID);
@@ -487,4 +487,4 @@ struct MatRenderNode final : Node
 };
 } // namespace BluePrint
 
-BP_NODE_DYNAMIC_WITH_NAME(MatRenderNode, "Image Render", "CodeWin", NODE_VERSION, VERSION_BLUEPRINT_API, BluePrint::NodeType::External, BluePrint::NodeStyle::Default, "Media")
+BP_NODE_DYNAMIC_WITH_NAME(MatRenderNode, "Media Render", "CodeWin", NODE_VERSION, VERSION_BLUEPRINT_API, BluePrint::NodeType::External, BluePrint::NodeStyle::Default, "Media")

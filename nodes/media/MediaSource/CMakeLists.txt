@@ -26,6 +26,7 @@ if(PKG_CONFIG_FOUND)
         libswscale
         libavdevice
     )
+    pkg_search_module(SDL2 REQUIRED sdl2)
 endif(PKG_CONFIG_FOUND)
 
 set(PLUGIN MediaSource)
@@ -46,6 +47,18 @@ if (FFMPEG_FOUND)
         PkgConfig::FFMPEG
     )
 endif(FFMPEG_FOUND)
+
+# SDL2 support
+if(SDL2_FOUND)
+    message(STATUS "[Media Source node with SDL2 support]")
+    include_directories(
+        ${SDL2_INCLUDE_DIRS}
+    )
+    set(LINK_LIBS
+        ${LINK_LIBS}
+        ${SDL2_STATIC_LDFLAGS}
+    )
+endif(SDL2_FOUND)
 
 target_link_libraries(
     ${PLUGIN}
