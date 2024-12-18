@@ -29,15 +29,34 @@ if(PKG_CONFIG_FOUND)
     pkg_search_module(SDL2 REQUIRED sdl2)
 endif(PKG_CONFIG_FOUND)
 
+include_directories(MediaPlayer)
+
 set(PLUGIN MediaSource)
 add_library(
     ${PLUGIN}
     SHARED
     ImMediaSourceNode.cpp
+    MediaPlayer/MediaInfo.h
+    MediaPlayer/MediaPlayer.h
+    MediaPlayer/MediaPlayer.cpp
+    MediaPlayer/AudioRender.hpp
+    MediaPlayer/AudioRender_Impl_Sdl2.hpp
+    MediaPlayer/AudioRender_Impl_Sdl2.cpp
+    MediaPlayer/FFUtils.h
+    MediaPlayer/FFUtils.cpp
+)
+
+set(PLUGIN2 MediaSourceSample)
+add_library(
+    ${PLUGIN2}
+    SHARED
+    ImMediaSourceSampleNode.cpp
 )
 
 add_dependencies(${PLUGIN} ${EXTRA_DEPENDENCE_PROJECT})
 set_property(TARGET ${PLUGIN} PROPERTY POSITION_INDEPENDENT_CODE ON)
+add_dependencies(${PLUGIN2} ${EXTRA_DEPENDENCE_PROJECT})
+set_property(TARGET ${PLUGIN2} PROPERTY POSITION_INDEPENDENT_CODE ON)
 set (LINK_LIBS ${EXTRA_DEPENDENCE_LIBRARYS})
 
 if (FFMPEG_FOUND)
@@ -67,6 +86,20 @@ target_link_libraries(
 
 set_target_properties(
     ${PLUGIN}
+    PROPERTIES
+    PREFIX ""
+    SUFFIX ".node"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/plugins/${PLUGIN_FOLDER}/media/"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/plugins/${PLUGIN_FOLDER}/media/"
+)
+
+target_link_libraries(
+    ${PLUGIN2}
+    ${LINK_LIBS}
+)
+
+set_target_properties(
+    ${PLUGIN2}
     PROPERTIES
     PREFIX ""
     SUFFIX ".node"

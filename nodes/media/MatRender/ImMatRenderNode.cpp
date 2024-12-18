@@ -205,7 +205,7 @@ struct MatRenderNode final : Node
         }
         else if (!mat.empty() && mat.flags & IM_MAT_FLAGS_AUDIO_FRAME)
         {
-            render_mat = mat;
+            render_mat = mat.clone();
         }
         return true;
     }
@@ -348,7 +348,7 @@ struct MatRenderNode final : Node
         else
         {
             // TODO::render ref audio
-            if (!m_RenderMat.empty() && m_RenderMat.flags & IM_MAT_FLAGS_AUDIO_FRAME)
+            if (!m_RenderMat.empty() && (m_RenderMat.flags & IM_MAT_FLAGS_AUDIO_FRAME))
             {
                 ImVec2 scope_view_size = ImVec2(m_preview_width, m_preview_height / m_RenderMat.c);
                 for (int i = 0; i < m_RenderMat.c; i++)
