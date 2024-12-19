@@ -84,6 +84,7 @@ struct CustomShaderNode final : Node
         my_identifiers.insert(std::make_pair("sfpmat3", "mat type, default is mat3, fp16 mode is f16mat3"));
         my_identifiers.insert(std::make_pair("sfpmat4", "mat type, default is mat4, fp16 mode is f16mat4"));
         my_identifiers.insert(std::make_pair("load", "sfpvec4 load(int x, int y) // short call as load_image"));
+        my_identifiers.insert(std::make_pair("loadd", "sfpvec4 loadd(int x, int y) // short call as load_dst_image"));
         my_identifiers.insert(std::make_pair("load2", "sfpvec4 load2(int x, int y) // short call as load_image_src2"));
         my_identifiers.insert(std::make_pair("store", "void store(sfpvec4 val, int x, int y) // short call as store_image"));
         my_identifiers.insert(std::make_pair("p", "param:"));
@@ -108,6 +109,7 @@ struct CustomShaderNode final : Node
         m_program_function_alias = std::string(
             "\n"
             "#define load(x, y) load_image(x, y, p.w, p.h, p.cstep, p.in_format, p.in_type)\n"
+            "#define loadd(x, y) load_dst_image(x, y, p.out_w, p.out_h, p.out_cstep, p.out_format, p.out_type)\n"
             "#define load2(x, y) load_image_src2(x, y, p.w2, p.h2, p.cstep2, p.in_format2, p.in_type2)\n"
             "#define store(v, x, y) store_image(v, x, y, p.out_w, p.out_h, p.out_cstep, p.out_format, p.out_type)\n"
             "\n"
@@ -119,9 +121,10 @@ struct CustomShaderNode final : Node
         m_program_start =   std::string(SHADER_HEADER) + 
                             std::string(SHADER_DEFAULT_PARAM2_HEADER) +
                             std::string(SHADER_DEFAULT_PARAM_TAIL) +
-                            std::string(SHADER_INPUT2_OUTPUT_DATA) +
+                            std::string(SHADER_INPUT2_OUTPUTRW_DATA) +
                             std::string(SHADER_LOAD_IMAGE) +
                             std::string(SHADER_LOAD_IMAGE_NAME(src2)) +
+                            std::string(SHADER_LOAD_DST_IMAGE) +
                             std::string(SHADER_STORE_IMAGE) +
                             m_program_function_alias;
         m_editor_preview.SetLanguageDefinition(m_lang);
@@ -146,9 +149,10 @@ struct CustomShaderNode final : Node
         param_string += std::string(SHADER_DEFAULT_PARAM_TAIL);
         m_program_start =   std::string(SHADER_HEADER) + 
                             param_string +
-                            std::string(SHADER_INPUT2_OUTPUT_DATA) +
+                            std::string(SHADER_INPUT2_OUTPUTRW_DATA) +
                             std::string(SHADER_LOAD_IMAGE) +
                             std::string(SHADER_LOAD_IMAGE_NAME(src2)) +
+                            std::string(SHADER_LOAD_DST_IMAGE) +
                             std::string(SHADER_STORE_IMAGE) +
                             m_program_function_alias;
         // need earse old pair ? 
