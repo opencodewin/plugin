@@ -109,7 +109,7 @@ struct MatImageNode final : Node
             if (m_split)
             {
                 m_split->split(m_mat, m_split_mat);
-                for (auto& mat : m_split_mat) mat.flags &= IM_MAT_FLAGS_IMAGE_FRAME;
+                for (auto& mat : m_split_mat) mat.flags |= IM_MAT_FLAGS_IMAGE_FRAME;
             }
             
             for (int i = 0; i < m_split_mat.size(); i++)
