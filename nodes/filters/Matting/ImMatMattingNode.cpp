@@ -26,6 +26,14 @@ struct MattingNode final : Node
         m_mutex.unlock();
     }
 
+    void WasUnlinked(const Pin& receiver, const Pin& provider) override
+    {
+        if (receiver.m_ID == m_MatIn.m_ID || receiver.m_ID == m_MatTri.m_ID)
+        {
+            if (m_filter) { delete m_filter; m_filter = nullptr; }
+        }
+    }
+
     FlowPin Execute(Context& context, FlowPin& entryPoint, bool threading = false) override
     {
         auto mat_in = context.GetPinValue<ImGui::ImMat>(m_MatIn);
