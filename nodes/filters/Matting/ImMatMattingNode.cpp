@@ -49,7 +49,7 @@ struct MattingNode final : Node
             }
             m_device = gpu;
             ImGui::ImMat im_alpha;
-            m_NodeTimeMs = m_filter->filter(mat_in, im_alpha, mat_tri, m_expand, m_range);
+            m_NodeTimeMs = m_filter->filter(mat_in, im_alpha, mat_tri, m_expand, m_seg);
             m_MatOut.SetValue(im_alpha);
         }
         return m_Exit;
@@ -76,22 +76,22 @@ struct MattingNode final : Node
         }
         bool changed = false;
         int _expand = m_expand;
-        int _range = m_range;
+        float _seg = m_seg;
         static ImGuiSliderFlags flags = ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_Stick;
         ImGui::PushStyleColor(ImGuiCol_Button, 0);
         ImGui::PushItemWidth(200);
         ImGui::BeginDisabled(!m_Enabled);
         ImGui::SliderInt("Expand##GuidedFilter", &_expand, 4, 32, "%.d", flags);
-        ImGui::SameLine(setting_offset);  if (ImGui::Button(ICON_RESET "##reset_expand#GuidedFilter")) { _expand = 16; changed = true; }
+        ImGui::SameLine(setting_offset);  if (ImGui::Button(ICON_RESET "##reset_expand#GuidedFilter")) { _expand = 10; changed = true; }
         ImGui::ShowTooltipOnHover("Reset Expand");
-        ImGui::SliderInt("Range##GuidedFilter", &_range, 1, 512, "%.d", flags);
-        ImGui::SameLine(setting_offset);  if (ImGui::Button(ICON_RESET "##reset_range##GuidedFilter")) { _range = 200; changed = true; }
-        ImGui::ShowTooltipOnHover("Reset Range");
+        ImGui::SliderFloat("Seg##GuidedFilter", &_seg, 1.0, 200.0, "%.0f", flags);
+        ImGui::SameLine(setting_offset);  if (ImGui::Button(ICON_RESET "##reset_seg#GuidedFilter")) { _seg = 20.0; changed = true; }
+        ImGui::ShowTooltipOnHover("Reset Seg");
         ImGui::EndDisabled();
         ImGui::PopItemWidth();
         ImGui::PopStyleColor();
-        if (_range != m_range) { m_range = _range; changed = true; }
         if (_expand != m_expand) { m_expand = _expand; changed = true; }
+        if (_seg != m_seg) { m_seg = _seg; changed = true; }
         return m_Enabled ? changed : false;
     }
 
@@ -107,17 +107,17 @@ struct MattingNode final : Node
             if (val.is_number()) 
                 m_mat_data_type = (ImDataType)val.get<imgui_json::number>();
         }
-        if (value.contains("range"))
-        {
-            auto& val = value["range"];
-            if (val.is_number()) 
-                m_range = val.get<imgui_json::number>();
-        }
         if (value.contains("expand"))
         {
             auto& val = value["expand"];
             if (val.is_number()) 
                 m_expand = val.get<imgui_json::number>();
+        }
+        if (value.contains("seg"))
+        {
+            auto& val = value["seg"];
+            if (val.is_number()) 
+                m_seg = val.get<imgui_json::number>();
         }
         return ret;
     }
@@ -126,8 +126,8 @@ struct MattingNode final : Node
     {
         Node::Save(value, MapID);
         value["mat_type"] = imgui_json::number(m_mat_data_type);
-        value["range"] = imgui_json::number(m_range);
         value["expand"] = imgui_json::number(m_expand);
+        value["seg"] = imgui_json::number(m_seg);
     }
 
     span<Pin*> GetInputPins() override { return m_InputPins; }
@@ -149,8 +149,8 @@ struct MattingNode final : Node
 private:
     ImDataType m_mat_data_type {IM_DT_UNDEFINED};
     int m_device        {-1};
-    int m_expand        {16};
-    int m_range         {200};
+    int m_expand        {10};
+    float m_seg         {20};
     ImGui::Matting_vulkan * m_filter   {nullptr};
 };
 } //namespace BluePrint
