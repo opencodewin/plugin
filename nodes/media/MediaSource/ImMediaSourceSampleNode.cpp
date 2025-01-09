@@ -501,6 +501,17 @@ struct MediaSourceSampleNode final : Node
         if (stream->m_frame->format == m_hw_pix_fmt)
         {
             /* retrieve data from GPU to CPU */
+            if ((ret = av_hwframe_transfer_data(sw_frame, stream->m_frame, 0)) < 0) 
+            {
+                fprintf(stderr, "Error transferring the data to system memory\n");
+                av_frame_free(&sw_frame);
+                return -1;
+            }
+            else
+            {
+                tmp_frame = sw_frame;
+            }
+            /*
             if ((ret = av_hwframe_map(sw_frame, stream->m_frame, AV_HWFRAME_MAP_READ)) < 0)
             {
                 fprintf(stderr, "Error mapping the data from HW memory\n");
@@ -521,6 +532,7 @@ struct MediaSourceSampleNode final : Node
             {
                 tmp_frame = sw_frame;
             }
+            */
         }
         else
         {
