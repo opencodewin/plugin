@@ -4,7 +4,7 @@
 #include <ImVulkanShader.h>
 #include "ColorBalance_vulkan.h"
 
-#define NODE_VERSION    0x01000000
+#define NODE_VERSION    0x01000100
 
 namespace BluePrint
 {
@@ -67,11 +67,19 @@ struct ColorBalanceNode final : Node
     bool DrawCustomLayout(ImGuiContext * ctx, float zoom, ImVec2 origin, ImGui::ImCurveEdit::Curve * key, bool embedded) override
     {
         ImGui::SetCurrentContext(ctx);
+        auto isEqu = [](ImVec4& a, ImPixel& b)
+        {
+            return a.x == b.r && a.y == b.g && a.z == b.b && a.w == b.a;
+        };
+        auto pixel_from_vec4 = [](const ImVec4& v)
+        {
+            return ImPixel(v.x, v.y, v.z, v.w);
+        };
         ImGuiSliderFlags flags = ImGuiSliderFlags_NoInput;
         bool changed = false;
-        ImVec4 _shadows = m_shadows;
-        ImVec4 _midtones = m_midtones;
-        ImVec4 _highlights = m_highlights;
+        ImVec4 _shadows(m_shadows.r, m_shadows.g, m_shadows.b, m_shadows.a);
+        ImVec4 _midtones(m_midtones.r, m_midtones.g, m_midtones.b, m_midtones.a);
+        ImVec4 _highlights(m_highlights.r, m_highlights.g, m_highlights.b, m_highlights.a);
         bool _preserve_lightness = m_preserve_lightness;
         bool _ganged = m_ganged;
         ImGui::PushItemWidth(200);
@@ -94,9 +102,9 @@ struct ColorBalanceNode final : Node
         ImGui::PopItemWidth();
         if (ImGui::Checkbox("Preserve Lightness", &_preserve_lightness)) {m_preserve_lightness = _preserve_lightness; changed = true; }
         if (ImGui::Checkbox("Color Ganged", &_ganged)) {m_ganged = _ganged; changed = true; }
-        if (_shadows != m_shadows) { m_shadows = _shadows; changed = true; }
-        if (_midtones != m_midtones) { m_midtones = _midtones; changed = true; }
-        if (_highlights != m_highlights) { m_highlights = _highlights; changed = true; }
+        if (!isEqu(_shadows, m_shadows)) { m_shadows = pixel_from_vec4(_shadows); changed = true; }
+        if (!isEqu(_midtones, m_midtones)) { m_midtones = pixel_from_vec4(_midtones); changed = true; }
+        if (!isEqu(_highlights, m_highlights)) { m_highlights = pixel_from_vec4(_highlights); changed = true; }
         ImGui::EndDisabled();
         return changed;
     }
@@ -116,26 +124,26 @@ struct ColorBalanceNode final : Node
         if (value.contains("shadows"))
         { 
             auto& val = value["shadows"];
-            if (val.contains("r")) {auto& fvalue = val["r"]; if (fvalue.is_number()) m_shadows.x = fvalue.get<imgui_json::number>();}
-            if (val.contains("g")) {auto& fvalue = val["g"]; if (fvalue.is_number()) m_shadows.y = fvalue.get<imgui_json::number>();}
-            if (val.contains("b")) {auto& fvalue = val["b"]; if (fvalue.is_number()) m_shadows.z = fvalue.get<imgui_json::number>();}
-            if (val.contains("a")) {auto& fvalue = val["a"]; if (fvalue.is_number()) m_shadows.w = fvalue.get<imgui_json::number>();}
+            if (val.contains("r")) {auto& fvalue = val["r"]; if (fvalue.is_number()) m_shadows.r = fvalue.get<imgui_json::number>();}
+            if (val.contains("g")) {auto& fvalue = val["g"]; if (fvalue.is_number()) m_shadows.g = fvalue.get<imgui_json::number>();}
+            if (val.contains("b")) {auto& fvalue = val["b"]; if (fvalue.is_number()) m_shadows.b = fvalue.get<imgui_json::number>();}
+            if (val.contains("a")) {auto& fvalue = val["a"]; if (fvalue.is_number()) m_shadows.a = fvalue.get<imgui_json::number>();}
         }
         if (value.contains("midtones"))
         { 
             auto& val = value["midtones"];
-            if (val.contains("r")) {auto& fvalue = val["r"]; if (fvalue.is_number()) m_midtones.x = fvalue.get<imgui_json::number>();}
-            if (val.contains("g")) {auto& fvalue = val["g"]; if (fvalue.is_number()) m_midtones.y = fvalue.get<imgui_json::number>();}
-            if (val.contains("b")) {auto& fvalue = val["b"]; if (fvalue.is_number()) m_midtones.z = fvalue.get<imgui_json::number>();}
-            if (val.contains("a")) {auto& fvalue = val["a"]; if (fvalue.is_number()) m_midtones.w = fvalue.get<imgui_json::number>();}
+            if (val.contains("r")) {auto& fvalue = val["r"]; if (fvalue.is_number()) m_midtones.r = fvalue.get<imgui_json::number>();}
+            if (val.contains("g")) {auto& fvalue = val["g"]; if (fvalue.is_number()) m_midtones.g = fvalue.get<imgui_json::number>();}
+            if (val.contains("b")) {auto& fvalue = val["b"]; if (fvalue.is_number()) m_midtones.b = fvalue.get<imgui_json::number>();}
+            if (val.contains("a")) {auto& fvalue = val["a"]; if (fvalue.is_number()) m_midtones.a = fvalue.get<imgui_json::number>();}
         }
         if (value.contains("highlights"))
         { 
             auto& val = value["highlights"];
-            if (val.contains("r")) {auto& fvalue = val["r"]; if (fvalue.is_number()) m_highlights.x = fvalue.get<imgui_json::number>();}
-            if (val.contains("g")) {auto& fvalue = val["g"]; if (fvalue.is_number()) m_highlights.y = fvalue.get<imgui_json::number>();}
-            if (val.contains("b")) {auto& fvalue = val["b"]; if (fvalue.is_number()) m_highlights.z = fvalue.get<imgui_json::number>();}
-            if (val.contains("a")) {auto& fvalue = val["a"]; if (fvalue.is_number()) m_highlights.w = fvalue.get<imgui_json::number>();}
+            if (val.contains("r")) {auto& fvalue = val["r"]; if (fvalue.is_number()) m_highlights.r = fvalue.get<imgui_json::number>();}
+            if (val.contains("g")) {auto& fvalue = val["g"]; if (fvalue.is_number()) m_highlights.g = fvalue.get<imgui_json::number>();}
+            if (val.contains("b")) {auto& fvalue = val["b"]; if (fvalue.is_number()) m_highlights.b = fvalue.get<imgui_json::number>();}
+            if (val.contains("a")) {auto& fvalue = val["a"]; if (fvalue.is_number()) m_highlights.a = fvalue.get<imgui_json::number>();}
         }
         if (value.contains("preserve_lightness"))
         { 
@@ -158,26 +166,26 @@ struct ColorBalanceNode final : Node
         value["mat_type"] = imgui_json::number(m_mat_data_type);
         {
             imgui_json::value shadows;
-            shadows["r"] = imgui_json::number(m_shadows.x);
-            shadows["g"] = imgui_json::number(m_shadows.y);
-            shadows["b"] = imgui_json::number(m_shadows.z);
-            shadows["a"] = imgui_json::number(m_shadows.w);
+            shadows["r"] = imgui_json::number(m_shadows.r);
+            shadows["g"] = imgui_json::number(m_shadows.g);
+            shadows["b"] = imgui_json::number(m_shadows.b);
+            shadows["a"] = imgui_json::number(m_shadows.a);
             value["shadows"] = shadows;
         }
         {
             imgui_json::value midtones;
-            midtones["r"] = imgui_json::number(m_midtones.x);
-            midtones["g"] = imgui_json::number(m_midtones.y);
-            midtones["b"] = imgui_json::number(m_midtones.z);
-            midtones["a"] = imgui_json::number(m_midtones.w);
+            midtones["r"] = imgui_json::number(m_midtones.r);
+            midtones["g"] = imgui_json::number(m_midtones.g);
+            midtones["b"] = imgui_json::number(m_midtones.b);
+            midtones["a"] = imgui_json::number(m_midtones.a);
             value["midtones"] = midtones;
         }
         {
             imgui_json::value highlights;
-            highlights["r"] = imgui_json::number(m_highlights.x);
-            highlights["g"] = imgui_json::number(m_highlights.y);
-            highlights["b"] = imgui_json::number(m_highlights.z);
-            highlights["a"] = imgui_json::number(m_highlights.w);
+            highlights["r"] = imgui_json::number(m_highlights.r);
+            highlights["g"] = imgui_json::number(m_highlights.g);
+            highlights["b"] = imgui_json::number(m_highlights.b);
+            highlights["a"] = imgui_json::number(m_highlights.a);
             value["highlights"] = highlights;
         }
         value["preserve_lightness"] = imgui_json::boolean(m_preserve_lightness);
@@ -211,9 +219,9 @@ private:
     ImDataType m_mat_data_type {IM_DT_UNDEFINED};
     int m_device                {-1};
     ImGui::ColorBalance_vulkan * m_filter   {nullptr};
-    ImVec4 m_shadows            {0, 0, 0, 0};
-    ImVec4 m_midtones           {0, 0, 0, 0};
-    ImVec4 m_highlights         {0, 0, 0, 0};
+    ImPixel m_shadows            {0, 0, 0, 0};
+    ImPixel m_midtones           {0, 0, 0, 0};
+    ImPixel m_highlights         {0, 0, 0, 0};
     bool m_preserve_lightness {false};
     bool m_ganged {false};
     mutable ImTextureID  m_logo {0};
