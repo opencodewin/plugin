@@ -51,7 +51,7 @@ struct IDFTNode final : Node
             if (!m_merge)
                 return {};
             m_device = gpu;
-            if (mat_in.c == 2)
+            if (mat_in.c == 3)
             {
                 ImGui::ImMat im_RGB; im_RGB.type = m_mat_data_type == IM_DT_UNDEFINED ? mat_in.type : m_mat_data_type;
                 m_NodeTimeMs = m_filter->idft(mat_in, im_RGB);
