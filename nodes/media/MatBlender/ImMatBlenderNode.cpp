@@ -5,7 +5,7 @@
 #include <imgui_json.h>
 #include <imgui_extra_widget.h>
 #include <ImVulkanShader.h>
-#include <PoissonBlend_vulkan.h>
+#include <SeamlessCloning_vulkan.h>
 
 #define NODE_VERSION    0x01000000
 
@@ -13,12 +13,11 @@ namespace BluePrint
 {
 struct BlendNode final : Node
 {
-    BP_NODE_WITH_NAME(BlendNode, "Image Blend", "CodeWin", NODE_VERSION, VERSION_BLUEPRINT_API, NodeType::External, NodeStyle::Default, "Media")
-    BlendNode(BP* blueprint): Node(blueprint) { m_Name = "Image Blend"; m_HasCustomLayout = true; }
+    BP_NODE_WITH_NAME(BlendNode, "Poisson Image Blend", "CodeWin", NODE_VERSION, VERSION_BLUEPRINT_API, NodeType::External, NodeStyle::Default, "Media")
+    BlendNode(BP* blueprint): Node(blueprint) { m_Name = "Poisson Blend"; m_HasCustomLayout = true; }
 
     ~BlendNode()
     {
-        if (m_blender) { delete m_blender; m_blender = nullptr; }
     }
 
     void Reset(Context& context) override
@@ -38,6 +37,7 @@ struct BlendNode final : Node
         }
         auto b_mat_in = context.GetPinValue<ImGui::ImMat>(m_MatBIn);
         auto f_mat_in = context.GetPinValue<ImGui::ImMat>(m_MatFIn);
+        auto m_mat_in = context.GetPinValue<ImGui::ImMat>(m_MatMIn);
         if (!b_mat_in.empty())
         {
             if (!m_Enabled)
@@ -46,14 +46,9 @@ struct BlendNode final : Node
                 return m_Exit;
             }
             int gpu = b_mat_in.device == IM_DD_VULKAN ? b_mat_in.device_number : ImGui::get_default_gpu_index();
-            if (!m_blender)
-            {
-                m_blender = new ImGui::PoissonBlend_vulkan(gpu);
-                if (!m_blender)
-                    return {};
-            }
-            ImGui::VkMat im_RGB; im_RGB.type = m_mat_data_type == IM_DT_UNDEFINED ? b_mat_in.type : m_mat_data_type;
-            m_NodeTimeMs = m_blender->blend(b_mat_in, f_mat_in, im_RGB, m_alpha, m_iteration, m_offset_x, m_offset_y);
+            ImGui::ImMat im_RGB;
+            m_NodeTimeMs = ImGui::SeamlessClone(f_mat_in, b_mat_in, m_mat_in, im_RGB, ImPoint(m_offset_x * b_mat_in.w, m_offset_y * b_mat_in.h), m_clone_type, gpu);
+            im_RGB.flags |= IM_MAT_FLAGS_VIDEO_FRAME;
             m_MatOut.SetValue(im_RGB);
         }
         return m_Exit;
@@ -81,8 +76,7 @@ struct BlendNode final : Node
         bool changed = false;
         float _offset_x = m_offset_x;
         float _offset_y = m_offset_y;
-        float _alpha = m_alpha;
-        int _iteration = m_iteration;
+        int _clone_type = m_clone_type;
 
         static ImGuiSliderFlags flags = ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_Stick;
         ImGui::PushStyleColor(ImGuiCol_Button, 0);
@@ -94,18 +88,12 @@ struct BlendNode final : Node
         ImGui::SliderFloat("Offset Y##Blend", &_offset_y, 0.f, 1.f, "%.2f", flags);
         ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_offset_y##Blend")) { _offset_y = 0; changed = true; }
         ImGui::ShowTooltipOnHover("Reset");
-        ImGui::SliderFloat("Alpha##Blend", &_alpha, 0.f, 1.f, "%.2f", flags);
-        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_alpha##Blend")) { _alpha = 0; changed = true; }
-        ImGui::ShowTooltipOnHover("Reset");
-        ImGui::SliderInt("Iter##Blend", &_iteration, 0, 128, "%d", flags);
-        ImGui::SameLine(setting_offset); if (ImGui::Button(ICON_RESET "##reset_iteration##Blend")) { _iteration = 5; changed = true; }
-        ImGui::ShowTooltipOnHover("Reset");
+        ImGui::Combo("Type", &_clone_type, "Normal seamless\0Mixed seamless\0RMonochrome transfer\0\0");
         ImGui::PopItemWidth();
         ImGui::PopStyleColor();
         if (_offset_x != m_offset_x) { m_offset_x = _offset_x; changed = true; }
         if (_offset_y != m_offset_y) { m_offset_y = _offset_y; changed = true; }
-        if (_alpha != m_alpha) { m_alpha = _alpha; changed = true; }
-        if (_iteration != m_iteration) { m_iteration = _iteration; changed = true; }
+        if (_clone_type != m_clone_type) { m_clone_type = _clone_type;  changed = true; }
         ImGui::EndDisabled();
         return changed;
     }
@@ -134,17 +122,11 @@ struct BlendNode final : Node
             if (val.is_number()) 
                 m_offset_y = val.get<imgui_json::number>();
         }
-        if (value.contains("alpha"))
+        if (value.contains("type"))
         {
-            auto& val = value["alpha"];
+            auto& val = value["type"];
             if (val.is_number()) 
-                m_alpha = val.get<imgui_json::number>();
-        }
-        if (value.contains("iteration"))
-        {
-            auto& val = value["iteration"];
-            if (val.is_number()) 
-                m_iteration = val.get<imgui_json::number>();
+                m_clone_type = val.get<imgui_json::number>();
         }
         return ret;
     }
@@ -155,8 +137,7 @@ struct BlendNode final : Node
         value["mat_type"] = imgui_json::number(m_mat_data_type);
         value["offset_x"] = imgui_json::number(m_offset_x);
         value["offset_y"] = imgui_json::number(m_offset_y);
-        value["alpha"]    = imgui_json::number(m_alpha);
-        value["iteration"]= imgui_json::number(m_iteration);
+        value["type"] = imgui_json::number(m_clone_type);
     }
 
     void DrawNodeLogo(ImGuiContext * ctx, ImVec2 size, std::string logo) const override
@@ -168,7 +149,7 @@ struct BlendNode final : Node
     span<Pin*> GetOutputPins() override { return m_OutputPins; }
     Pin* GetAutoLinkInputFlowPin() override { return &m_Enter; }
     Pin* GetAutoLinkOutputFlowPin() override { return &m_Exit; }
-    vector<Pin*> GetAutoLinkInputDataPin() override { return {&m_MatBIn, &m_MatFIn}; }
+    vector<Pin*> GetAutoLinkInputDataPin() override { return {&m_MatBIn, &m_MatFIn, &m_MatMIn}; }
     vector<Pin*> GetAutoLinkOutputDataPin() override { return {&m_MatOut}; }
 
     FlowPin   m_Enter   = { this, "Enter" };
@@ -177,19 +158,18 @@ struct BlendNode final : Node
     FlowPin   m_OReset  = { this, "Reset Out" };
     MatPin    m_MatBIn  = { this, "InBack" };
     MatPin    m_MatFIn  = { this, "InFront" };
+    MatPin    m_MatMIn  = { this, "InMask" };
     MatPin    m_MatOut  = { this, "Out" };
 
-    Pin* m_InputPins[4] = { &m_Enter, &m_IReset, &m_MatBIn, &m_MatFIn };
+    Pin* m_InputPins[5] = { &m_Enter, &m_IReset, &m_MatBIn, &m_MatFIn, &m_MatMIn };
     Pin* m_OutputPins[3] = { &m_Exit, &m_OReset, &m_MatOut };
 
 private:
     ImDataType m_mat_data_type {IM_DT_UNDEFINED};
-    ImGui::PoissonBlend_vulkan * m_blender {nullptr};
     float m_offset_x {0.f};
     float m_offset_y {0.f};
-    float m_alpha {0.5};
-    int m_iteration {5};
+    int m_clone_type {0};
 };
 } //namespace BluePrint
 
-BP_NODE_DYNAMIC_WITH_NAME(BlendNode, "Image Blend", "CodeWin", NODE_VERSION, VERSION_BLUEPRINT_API, BluePrint::NodeType::External, BluePrint::NodeStyle::Default, "Media")
+BP_NODE_DYNAMIC_WITH_NAME(BlendNode, "Poisson Image Blend", "CodeWin", NODE_VERSION, VERSION_BLUEPRINT_API, BluePrint::NodeType::External, BluePrint::NodeStyle::Default, "Media")

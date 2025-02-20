@@ -168,13 +168,17 @@ struct MatRenderNode final : Node
                 else if (mat.c == 2)
                 {
                     render_vkmat.type = IM_DT_INT8;
+                    render_vkmat.color_format = IM_CF_ABGR;
                     m_convert->ConvertColorFormat(mat, render_vkmat);
                 }
                 else if (mat.c == 3)
                 {
                     render_vkmat.type = IM_DT_INT8;
+                    render_vkmat.color_format = IM_CF_ABGR;
                     if (IM_ISYUV(mat.color_format))
+                    {
                         m_convert->ConvertColorFormat(mat, render_vkmat);
+                    }
                     else
                     {
                         ImGui::VkMat in_mat = mat;
@@ -196,7 +200,8 @@ struct MatRenderNode final : Node
             else
             {
                 render_vkmat.type = IM_DT_INT8;
-                m_convert->ConvertColorFormat(mat, render_vkmat);
+                render_vkmat.color_format = IM_CF_ABGR;
+                m_convert->Conv(mat, render_vkmat);
             }
 #else
             render_mat = mat; // TODO::Dicky Software convert?

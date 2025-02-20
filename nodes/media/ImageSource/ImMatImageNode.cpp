@@ -136,7 +136,7 @@ struct MatImageNode final : Node
         if (auto data = stbi_load(m_path.c_str(), &width, &height, &component, 4))
         {
             m_mutex.lock();
-            m_mat.create(width, height, 4, 1u);
+            m_mat.create(width, height, 4, 1u, 4);
             memcpy(m_mat.data, data, m_mat.total());
             m_mat.flags |= IM_MAT_FLAGS_IMAGE_FRAME;
             stbi_image_free(data);
