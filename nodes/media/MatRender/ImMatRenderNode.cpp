@@ -169,12 +169,14 @@ struct MatRenderNode final : Node
                 {
                     render_vkmat.type = IM_DT_INT8;
                     render_vkmat.color_format = IM_CF_ABGR;
+                    render_vkmat.c = 4;
                     m_convert->ConvertColorFormat(mat, render_vkmat);
                 }
                 else if (mat.c == 3)
                 {
                     render_vkmat.type = IM_DT_INT8;
                     render_vkmat.color_format = IM_CF_ABGR;
+                    render_vkmat.c = 4;
                     if (IM_ISYUV(mat.color_format))
                     {
                         m_convert->ConvertColorFormat(mat, render_vkmat);
@@ -201,6 +203,7 @@ struct MatRenderNode final : Node
             {
                 render_vkmat.type = IM_DT_INT8;
                 render_vkmat.color_format = IM_CF_ABGR;
+                render_vkmat.c = 4;
                 m_convert->Conv(mat, render_vkmat);
             }
 #else
