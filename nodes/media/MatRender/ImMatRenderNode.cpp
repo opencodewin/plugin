@@ -350,7 +350,6 @@ struct MatRenderNode final : Node
             ImDrawList * draw_list = ImGui::GetWindowDrawList();
             auto PreviewPosSource = ImGui::GetCursorPos();
             auto PreviewSizeSource = ImVec2(m_preview_width,m_preview_height);
-            //ImGui::ImShowVideoWindow(draw_list, m_textureID, PreviewPosSource, PreviewSizeSource, 360, IM_COL32(0,0,0,0), 1);
             ImGui::ImShowVideoWindowCompare(ImGui::GetWindowDrawList(), m_textureID, m_textureID_ref, PreviewPosSource, PreviewSizeSource, m_split_pos, true, 360);
         }
         else
